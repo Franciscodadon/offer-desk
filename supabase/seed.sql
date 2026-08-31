@@ -1,0 +1,19 @@
+-- Optional local seed data.
+--
+-- Applied by `supabase db reset` against a LOCAL database only. It is not part
+-- of the migration chain and must never be run against production.
+--
+-- Deliberately empty of deals: the pipeline should start empty so the first
+-- real import or the first logged deal is unambiguous. Add fixtures here when
+-- developing a screen that needs data.
+
+-- Example, kept commented so a stray reset cannot invent a workspace:
+--
+-- insert into orgs (id, name, buyer_entity, signatory_name, default_terms)
+-- values (
+--   '00000000-0000-0000-0000-000000000001',
+--   'Deo Volente',
+--   'Deo Volente LLC',
+--   'Francisco Caballero Jr.',
+--   '{"emd": 1000, "inspectionDays": 10, "closeDays": 21, "maoPct": 0.7}'::jsonb
+-- );

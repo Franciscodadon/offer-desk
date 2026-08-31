@@ -1,0 +1,45 @@
+# Supabase CLI project configuration.
+#
+# Link this directory to a project once, then push the schema:
+#   npx supabase link --project-ref <your-project-ref>
+#   npx supabase db push
+#
+# `project_id` is only a local label; the linked ref is stored separately by
+# the CLI and is not committed.
+
+project_id = "offer-desk"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 16
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+# Update both to your deployed web URL before shipping; the mobile app uses the
+# offerdesk:// scheme declared in app.json.
+site_url = "http://localhost:8081"
+additional_redirect_urls = ["http://localhost:8081", "offerdesk://"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+# Leave confirmations on. The signup trigger creates the workspace on insert
+# into auth.users, so an unconfirmed account still has a valid org waiting.
+enable_confirmations = true
+
+# Apple and Google sign-in (PRD 7.1) are configured in the hosted dashboard,
+# where the client secrets live. They are deliberately not templated here so no
+# secret can be committed by accident.
