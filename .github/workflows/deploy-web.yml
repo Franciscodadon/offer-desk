@@ -58,6 +58,26 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # A build with no secrets set still succeeds and deploys, but the app
+      # shows its setup screen instead of sign-in. That is confusing to see on
+      # a live URL, so say plainly in the log which value is missing.
+      - name: Check configuration
+        run: |
+          missing=0
+          if [ -z "${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}" ]; then
+            echo "::warning::EXPO_PUBLIC_SUPABASE_URL secret is not set. This is the Project URL from Supabase (Settings, then API)."
+            missing=1
+          fi
+          if [ -z "${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}" ]; then
+            echo "::warning::EXPO_PUBLIC_SUPABASE_ANON_KEY secret is not set. This is the anon public key from the same page."
+            missing=1
+          fi
+          if [ "$missing" = "1" ]; then
+            echo "::warning::The site will publish, but will show the setup screen until both secrets are added under Settings, Secrets and variables, Actions."
+          else
+            echo "Both Supabase secrets are present."
+          fi
+
       - name: Build web
         env:
           EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
