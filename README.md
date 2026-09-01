@@ -21,24 +21,52 @@ npm start          # then press w for web, i for iOS, a for Android
 ```
 
 The app boots without a backend and shows a setup screen explaining what is
-missing. To connect one:
+missing. There are two ways to give it one.
 
-1. Create a free project at [supabase.com](https://supabase.com). The free tier
-   (500MB Postgres, 1GB storage, 50k monthly active users) covers the internal
-   build comfortably.
-2. In the dashboard, open **Project Settings → API** and copy the **Project URL**
-   and the **anon public** key.
-3. `cp .env.example .env.local` and paste both values in.
-4. Apply the schema, either with the Supabase CLI:
+### Option A: entirely on your machine, no cloud account
+
+Supabase is open source and the whole stack runs locally. This adds no project
+to any account and costs nothing. It needs Docker Desktop running.
+
+```bash
+npm run db:start    # boots Postgres, Auth, Storage, Realtime and Studio
+npm run db:reset    # applies supabase/migrations in filename order
+npm run db:status   # prints the local API URL and anon key
+```
+
+Copy the `API URL` and `anon key` that `db:status` prints into `.env.local`
+(start from `.env.example`), then `npx expo start --clear`.
+
+This is the right setup for building and for verifying the whole flow end to
+end. Its one limit is inherent, not a licensing catch: the database lives on
+that machine, so a phone on cell data cannot reach it. Local is for
+development; sharing a pipeline across devices needs Option B.
+
+### Option B: a hosted project, for real use across devices
+
+The PRD's whole premise is a phone in the field and the web at the desk sharing
+one pipeline, and that needs a database both can reach.
+
+1. Create a project at [supabase.com](https://supabase.com). The free tier
+   covers the internal build comfortably; free projects are limited in number
+   per organization, so check your current usage before counting on a new one.
+2. In the dashboard, open **Project Settings -> API** and copy the **Project
+   URL** and the **anon public** key into `.env.local`.
+3. Apply the schema:
    ```bash
    npx supabase link --project-ref <your-project-ref>
-   npx supabase db push
+   npm run db:push
    ```
-   or by pasting each file in `supabase/migrations/` into the dashboard SQL
-   editor, **in filename order**.
-5. Restart with `npx expo start --clear`. The `--clear` matters: Metro caches
+   Or paste each file in `supabase/migrations/` into the dashboard SQL editor,
+   **in filename order**.
+4. Restart with `npx expo start --clear`. The `--clear` matters: Metro caches
    the transform that inlines `EXPO_PUBLIC_*` values, so without it the app
    keeps reading the old (empty) config.
+
+If you would rather not use Supabase's hosting at all, the same stack
+self-hosts on any VPS you control - it is the same open-source images
+`db:start` runs locally, just pointed at a server. That trades roughly ten
+dollars a month and some setup for full ownership.
 
 Sign up, and the database creates your workspace automatically.
 
@@ -80,6 +108,10 @@ through the real UI so a units bug in a percent field cannot quietly break it.
 | `npm test` | Jest unit tests |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run lint` | ESLint |
+| `npm run db:start` / `db:stop` | Boots or stops the full Supabase stack locally (needs Docker) |
+| `npm run db:reset` | Applies every migration to the local stack |
+| `npm run db:status` | Prints the local API URL and anon key |
+| `npm run db:push` | Pushes migrations to a linked hosted project |
 | `npm run db:test` | Applies every migration to a scratch Postgres and runs the RLS isolation tests |
 
 `npm run db:test` needs a local Postgres. It never touches your Supabase

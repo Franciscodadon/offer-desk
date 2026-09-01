@@ -1,11 +1,20 @@
 # Supabase CLI project configuration.
 #
-# Link this directory to a project once, then push the schema:
-#   npx supabase link --project-ref <your-project-ref>
-#   npx supabase db push
+# Two ways to use this:
 #
-# `project_id` is only a local label; the linked ref is stored separately by
-# the CLI and is not committed.
+#   1. Entirely on your machine, with no cloud account and no project added to
+#      one. Needs Docker Desktop running:
+#         npm run db:start     # boots Postgres, Auth, Storage, Realtime, Studio
+#         npm run db:reset     # applies supabase/migrations in order
+#         npm run db:status    # prints the local URL and anon key for .env.local
+#
+#   2. Against a hosted project, when the team needs to share data across
+#      phones and the web:
+#         npx supabase link --project-ref <your-project-ref>
+#         npm run db:push
+#
+# `project_id` is only a local label; a linked ref is stored separately by the
+# CLI and is not committed.
 
 project_id = "offer-desk"
 
@@ -18,7 +27,9 @@ max_rows = 1000
 
 [db]
 port = 54322
-major_version = 16
+# Must match a version the installed CLI supports. 16 is rejected outright,
+# which is why this is pinned and not left to a guess.
+major_version = 17
 
 [studio]
 enabled = true
