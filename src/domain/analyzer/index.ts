@@ -16,6 +16,7 @@ export {
   maoLadder,
   type MaoRung,
 } from './mao';
+export { flipLadder, type Ladder, type LadderRung } from './ladder';
 export { analyzeWholesale } from './wholesale';
 export {
   amortizedInterest,

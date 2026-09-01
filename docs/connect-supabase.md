@@ -59,6 +59,9 @@ Two ways. The first needs nothing installed.
 
 ### Option A: paste it (simplest for the first setup)
 
+**This is for a database with nothing in it.** To update one that already has
+the schema, skip to "Updating an existing database" below.
+
 ```bash
 npm run db:bundle
 ```
@@ -83,6 +86,31 @@ The project ref is the subdomain of your Project URL: for
 
 Once linked, future schema changes are one `npm run db:push` instead of another
 paste, so it is worth doing at some point even if you start with Option A.
+
+## Updating an existing database
+
+`supabase/schema.sql` builds the schema from nothing, so running it a second
+time fails on the first type it tries to create:
+
+```
+ERROR: 42710: type "org_role" already exists
+```
+
+That failure is harmless. The file is wrapped in a single transaction, so it
+rolls back and the database is exactly as it was. But it is not how to apply a
+change.
+
+To update, apply only the migrations you have not run yet, from
+`supabase/migrations/`, oldest first. Each file stands alone: open it, copy it,
+paste it into the SQL Editor, Run. The migrations after the initial four are
+written to be safe to run twice, so re-applying one you already have is not a
+problem.
+
+With the CLI it is one command instead:
+
+```bash
+npm run db:push
+```
 
 ## 4. Point the app at it
 

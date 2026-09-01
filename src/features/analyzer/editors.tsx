@@ -16,6 +16,7 @@ import { Button, Card, Chip, Text } from '@/components/ui';
 import {
   analyzeBrrrr,
   analyzeFlip,
+  flipLadder,
   analyzeTurnkey,
   analyzeWholesale,
   defaultLoan,
@@ -25,6 +26,7 @@ import {
   type FlipInputs,
   type Loan,
   type LoanBase,
+  DEFAULT_MAO_PCT,
   type TurnkeyInputs,
   type WholesaleInputs,
 } from '@/domain/analyzer';
@@ -33,6 +35,7 @@ import { spacing } from '@/theme/tokens';
 
 import { MoneyInput, NumberInput, PercentInput, ResultRow, VerdictPill, fieldStyles } from './fields';
 import { MaoPresets } from './MaoPresets';
+import { OfferLadder } from './OfferLadder';
 
 /** Reports the live inputs and computed outputs so the screen can save them. */
 export type EditorReport<TInputs> = (state: {
@@ -139,7 +142,12 @@ export function FlipEditor({
   onChange: EditorReport<FlipInputs>;
 }) {
   const [inputs, setInputs] = useState(initial);
+  // The ladder is where the screen opens; the full model is one tap away.
+  // Someone underwriting wants the comparison first and the audit second.
+  const [showFullModel, setShowFullModel] = useState(false);
+  const [maoPct, setMaoPct] = useState(DEFAULT_MAO_PCT);
   const result = analyzeFlip(inputs);
+  const ladder = flipLadder(inputs, maoPct);
 
   useEffect(() => {
     onChange({ inputs, computed: { ...result } });
@@ -157,8 +165,42 @@ export function FlipEditor({
 
   const marginVerdict = verdictFor(result.margin, VERDICT_THRESHOLDS.flipMargin);
 
+  /** Takes the offer a rung prices into the model as a fixed purchase. */
+  function takeRung(nextMaoPct: number) {
+    const rung = ladder.rungs.find((candidate) => candidate.maoPct === nextMaoPct);
+    setMaoPct(nextMaoPct);
+    if (!rung?.viable) return;
+    setInputs((previous) => ({ ...previous, mode: 'profit', purchase: rung.purchase }));
+  }
+
   return (
     <>
+      <Card>
+        <View style={styles.sectionHeader}>
+          <Text variant="label" tone="muted">
+            Offer ladder
+          </Text>
+          <Button
+            label={showFullModel ? 'Hide full model' : 'Full model'}
+            variant="ghost"
+            fullWidth={false}
+            onPress={() => setShowFullModel((value) => !value)}
+          />
+        </View>
+        <View style={fieldStyles.row}>
+          <MoneyInput label="ARV" value={inputs.arv} onChange={(v) => set('arv', v)} />
+          <MoneyInput
+            label="Repairs"
+            value={inputs.repairs}
+            onChange={(v) => set('repairs', v)}
+          />
+        </View>
+      </Card>
+
+      <OfferLadder ladder={ladder} onSelect={takeRung} />
+
+      {!showFullModel ? null : (
+      <>
       <Card>
         <Text variant="label" tone="muted">
           Calculate my
@@ -176,12 +218,6 @@ export function FlipEditor({
           />
         </View>
         <View style={fieldStyles.row}>
-          <MoneyInput label="ARV" value={inputs.arv} onChange={(v) => set('arv', v)} />
-          <MoneyInput
-            label="Repairs"
-            value={inputs.repairs}
-            onChange={(v) => set('repairs', v)}
-          />
           {inputs.mode === 'max_offer' ? (
             <MoneyInput
               label="Target profit"
@@ -376,6 +412,9 @@ export function FlipEditor({
           />
         </View>
       </Card>
+
+      </>
+      )}
 
       <Card>
         <View style={styles.sectionHeader}>

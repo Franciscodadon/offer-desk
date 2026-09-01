@@ -3,8 +3,17 @@
 -- GENERATED FILE. Do not edit: edit supabase/migrations/ and run
 -- npm run db:bundle. CI checks that this file matches the migrations.
 --
--- To apply: copy this whole file into the Supabase SQL Editor and Run.
--- It is one transaction, so it either all applies or none of it does.
+-- FOR A FRESH DATABASE ONLY. This creates types and tables from
+-- nothing, so running it against a database that already has the
+-- schema fails on the first type it tries to create:
+--     ERROR: 42710: type "org_role" already exists
+-- That failure is safe - the whole file is one transaction, so it
+-- rolls back and changes nothing - but it is not the way to update.
+--
+-- TO UPDATE AN EXISTING DATABASE, apply only the migration files you
+-- have not run yet, from supabase/migrations/, oldest first. Each one
+-- can be pasted into the SQL Editor on its own. With the CLI:
+--     npm run db:push
 
 begin;
 

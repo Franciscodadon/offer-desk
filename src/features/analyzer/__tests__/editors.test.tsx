@@ -39,6 +39,18 @@ const acceptanceCase: FlipInputs = {
   },
 };
 
+/**
+ * The flip editor opens on the offer ladder; the inputs live behind "Full
+ * model". Tests that drive those inputs open it first, the way a user would.
+ */
+function renderWithFullModel(onChange: (state: { inputs: FlipInputs }) => void = () => {}) {
+  const view = renderWithProviders(
+    <FlipEditor initial={acceptanceCase} onChange={onChange as never} />,
+  );
+  fireEvent.press(screen.getByText('Full model'));
+  return view;
+}
+
 describe('FlipEditor - PRD 7.6 acceptance case through the UI', () => {
   it('displays the max offer and every headline figure the PRD states', () => {
     renderWithProviders(<FlipEditor initial={acceptanceCase} onChange={() => {}} />);
@@ -55,7 +67,7 @@ describe('FlipEditor - PRD 7.6 acceptance case through the UI', () => {
   });
 
   it('shows rates as whole percentages, not as ratios', () => {
-    renderWithProviders(<FlipEditor initial={acceptanceCase} onChange={() => {}} />);
+    renderWithFullModel();
 
     // 0.125 must reach the user as 12.5, and 0.06 as 6 - not 0.125 and 0.06.
     expect(screen.getByLabelText('Rate %').props.value).toBe('12.5');
@@ -65,12 +77,7 @@ describe('FlipEditor - PRD 7.6 acceptance case through the UI', () => {
 
   it('converts a typed percentage back to a ratio exactly once', () => {
     const reports: FlipInputs[] = [];
-    renderWithProviders(
-      <FlipEditor
-        initial={acceptanceCase}
-        onChange={({ inputs }) => reports.push(inputs)}
-      />,
-    );
+    renderWithFullModel(({ inputs }) => reports.push(inputs));
 
     fireEvent.changeText(screen.getByLabelText('Rate %'), '10');
 
@@ -79,7 +86,7 @@ describe('FlipEditor - PRD 7.6 acceptance case through the UI', () => {
   });
 
   it('recomputes when an input changes', () => {
-    renderWithProviders(<FlipEditor initial={acceptanceCase} onChange={() => {}} />);
+    renderWithFullModel();
 
     expect(screen.getByText('$237,483')).toBeTruthy();
     // A higher target profit must lower the max offer.
@@ -88,7 +95,7 @@ describe('FlipEditor - PRD 7.6 acceptance case through the UI', () => {
   });
 
   it('switches between max-offer and profit mode', () => {
-    renderWithProviders(<FlipEditor initial={acceptanceCase} onChange={() => {}} />);
+    renderWithFullModel();
 
     expect(screen.getByLabelText('Target profit')).toBeTruthy();
     fireEvent.press(screen.getByLabelText('Profit'));
@@ -103,7 +110,7 @@ describe('FlipEditor - PRD 7.6 acceptance case through the UI', () => {
   });
 
   it('lets a loan be added and removed', () => {
-    renderWithProviders(<FlipEditor initial={acceptanceCase} onChange={() => {}} />);
+    renderWithFullModel();
 
     expect(screen.queryByText('Remove loan')).toBeNull();
     fireEvent.press(screen.getByText('Add loan'));
@@ -115,15 +122,53 @@ describe('FlipEditor - PRD 7.6 acceptance case through the UI', () => {
 
   it('clearing a money field does not write a bogus number', () => {
     const reports: FlipInputs[] = [];
-    renderWithProviders(
-      <FlipEditor initial={acceptanceCase} onChange={({ inputs }) => reports.push(inputs)} />,
-    );
+    renderWithFullModel(({ inputs }) => reports.push(inputs));
 
     fireEvent.changeText(screen.getByLabelText('Repairs'), '');
 
     const latest = reports[reports.length - 1];
     expect(latest.repairs).toBe(0);
     expect(Number.isFinite(latest.repairs)).toBe(true);
+  });
+});
+
+describe('FlipEditor - the offer ladder', () => {
+  it('opens on the ladder, with the full model behind a tap', () => {
+    renderWithProviders(<FlipEditor initial={acceptanceCase} onChange={() => {}} />);
+
+    expect(screen.getByText('Offer ladder')).toBeTruthy();
+    // The financing inputs are not on screen until asked for.
+    expect(screen.queryByLabelText('Rate %')).toBeNull();
+
+    fireEvent.press(screen.getByText('Full model'));
+    expect(screen.getByLabelText('Rate %')).toBeTruthy();
+  });
+
+  it('prices every percentage on the ladder', () => {
+    renderWithProviders(<FlipEditor initial={acceptanceCase} onChange={() => {}} />);
+
+    // Each rung is a real run of the model at that purchase price.
+    expect(screen.getByText('$153,622')).toBeTruthy(); // 50%
+    expect(screen.getByText('$225,071')).toBeTruthy(); // 70%
+    expect(screen.getByText('$278,657')).toBeTruthy(); // 85%
+  });
+
+  it('says how high you can go, in words', () => {
+    renderWithProviders(<FlipEditor initial={acceptanceCase} onChange={() => {}} />);
+    expect(screen.getByText(/75% is as high as you can go/)).toBeTruthy();
+  });
+
+  it('takes a rung into the model as a fixed purchase when tapped', () => {
+    const reports: FlipInputs[] = [];
+    renderWithProviders(
+      <FlipEditor initial={acceptanceCase} onChange={({ inputs }) => reports.push(inputs)} />,
+    );
+
+    fireEvent.press(screen.getByLabelText(/^65% of ARV/));
+
+    const latest = reports[reports.length - 1];
+    expect(latest.mode).toBe('profit');
+    expect(Math.round(latest.purchase)).toBe(207209);
   });
 });
 
