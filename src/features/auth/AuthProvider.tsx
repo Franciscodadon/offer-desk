@@ -45,6 +45,10 @@ type AuthContextValue = AuthState & {
     name: string;
     orgName: string;
   }) => Promise<{ error: string | null; needsConfirmation: boolean }>;
+  /** Confirms a signup with the code Supabase emails. */
+  verifyEmailCode: (email: string, code: string) => Promise<{ error: string | null }>;
+  /** Sends the confirmation email again. */
+  resendEmailCode: (email: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 };
@@ -187,6 +191,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  /**
+   * Confirms a signup with the six-digit code from the email.
+   *
+   * Supabase's default template sends a code rather than only a link, so the
+   * app has to accept one; a confirmation the user cannot complete in the app
+   * is a dead end. On success this establishes a session, and the auth listener
+   * picks it up and the guard redirects.
+   */
+  const verifyEmailCode = useCallback<AuthContextValue['verifyEmailCode']>(
+    async (email, code) => {
+      const supabase = getSupabase();
+      if (!supabase) return { error: 'Supabase is not configured yet.' };
+
+      const { error } = await supabase.auth.verifyOtp({
+        email: email.trim().toLowerCase(),
+        token: code.trim(),
+        type: 'signup',
+      });
+
+      if (!error) {
+        setState((previous) => ({ ...previous, error: null }));
+        return { error: null };
+      }
+
+      const normalized = error.message.toLowerCase();
+      if (normalized.includes('expired')) {
+        return { error: 'That code has expired. Send a new one and try again.' };
+      }
+      if (normalized.includes('invalid') || normalized.includes('token')) {
+        return { error: 'That code did not match. Check it and try again.' };
+      }
+      return { error: error.message };
+    },
+    [],
+  );
+
+  const resendEmailCode = useCallback<AuthContextValue['resendEmailCode']>(
+    async (email) => {
+      const supabase = getSupabase();
+      if (!supabase) return { error: 'Supabase is not configured yet.' };
+
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email.trim().toLowerCase(),
+      });
+      return { error: error ? error.message : null };
+    },
+    [],
+  );
+
   const signOut = useCallback(async () => {
     const supabase = getSupabase();
     await supabase?.auth.signOut();
@@ -208,10 +262,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       orgId: state.profile?.org_id ?? null,
       signIn,
       signUp,
+      verifyEmailCode,
+      resendEmailCode,
       signOut,
       refreshProfile,
     }),
-    [refreshProfile, signIn, signOut, signUp, state],
+    [refreshProfile, resendEmailCode, signIn, signOut, signUp, state, verifyEmailCode],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

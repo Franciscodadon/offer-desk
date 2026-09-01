@@ -1,14 +1,15 @@
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { Button, Card, Screen, Text, TextField } from '@/components/ui';
+import { Button, Screen, Text, TextField } from '@/components/ui';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { spacing } from '@/theme/tokens';
 
 const MIN_PASSWORD_LENGTH = 8;
 
 export default function SignUpScreen() {
+  const router = useRouter();
   const { signUp } = useAuth();
   const [name, setName] = useState('');
   const [orgName, setOrgName] = useState('');
@@ -16,7 +17,6 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [awaitingConfirmation, setAwaitingConfirmation] = useState(false);
 
   const passwordTooShort = password.length > 0 && password.length < MIN_PASSWORD_LENGTH;
   const canSubmit =
@@ -36,25 +36,16 @@ export default function SignUpScreen() {
       setError(result.error);
       return;
     }
-    if (result.needsConfirmation) setAwaitingConfirmation(true);
-  }
-
-  if (awaitingConfirmation) {
-    return (
-      <Screen center>
-        <Card>
-          <Text variant="heading">Confirm your email</Text>
-          <Text variant="body" tone="muted">
-            We sent a confirmation link to {email.trim().toLowerCase()}. Open it, then sign in.
-          </Text>
-        </Card>
-        <Link href="/sign-in">
-          <Text variant="bodyStrong" tone="accent">
-            Back to sign in
-          </Text>
-        </Link>
-      </Screen>
-    );
+    if (result.needsConfirmation) {
+      // Supabase emails a code, so send the user somewhere they can enter one.
+      router.push({
+        pathname: '/verify',
+        params: { email: email.trim().toLowerCase() },
+      });
+      return;
+    }
+    // Confirmation is off, so signUp already returned a session and the layout
+    // guard redirects on its own.
   }
 
   return (
