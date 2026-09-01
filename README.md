@@ -103,6 +103,31 @@ an acceptance case. That case is a test (`src/domain/analyzer/__tests__/`), it
 passes on every figure the PRD states, and a second test drives the same case
 through the real UI so a units bug in a percent field cannot quietly break it.
 
+## Using it without installing anything
+
+The web app builds and deploys itself. Every push to the default branch runs
+the checks and, if they pass, publishes to GitHub Pages at
+`https://franciscodadon.github.io/offer-desk/`, which works in any browser
+including a phone.
+
+Two one-time settings enable it:
+
+1. **Settings -> Pages -> Source**: choose **GitHub Actions**.
+2. **Settings -> Secrets and variables -> Actions**, add two repository secrets:
+   `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY`, the same two
+   values from your Supabase dashboard.
+
+Then re-run the latest workflow under the Actions tab.
+
+Both values end up compiled into the published bundle, because the browser has
+to reach Supabase somehow. That is safe for the anon key: it grants nothing on
+its own, and Row-Level Security decides what any signed-in user can read. The
+`service_role` key must never be added as a secret here.
+
+Note that iOS and Android builds still need a build service (EAS), which builds
+in the cloud and does not require a Mac. The web app above is enough to use the
+product day to day.
+
 ## Commands
 
 | Command | What it does |

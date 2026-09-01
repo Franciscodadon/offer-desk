@@ -1,0 +1,91 @@
+# Builds the web app and publishes it to GitHub Pages.
+#
+# This is what lets Offer Desk be used without installing anything: GitHub does
+# the build, and the result is a URL that works in any browser, including a
+# phone in the field.
+#
+# Before the first run, two things have to be set in the repository settings:
+#   Settings -> Pages -> Source: GitHub Actions
+#   Settings -> Secrets and variables -> Actions -> New repository secret:
+#     EXPO_PUBLIC_SUPABASE_URL
+#     EXPO_PUBLIC_SUPABASE_ANON_KEY
+#
+# Those two values are compiled into the published bundle, which is how the
+# browser reaches Supabase at all. That is safe for the anon key specifically,
+# because Row-Level Security is what protects the data. The service_role key
+# must never be added here.
+name: Deploy web
+
+on:
+  push:
+    branches: [claude/prd-review-clarify-spvsrc]
+  workflow_dispatch:
+
+# Allow the workflow to publish to Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a run finish rather than cancelling it, so a deploy is never left
+# half-published.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # A broken build must not reach the URL the team is using, so the checks
+      # run first and a failure stops the deploy.
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build web
+        env:
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+        run: npx expo export --platform web --clear
+
+      # Pages runs Jekyll by default, which silently drops any directory
+      # starting with an underscore. The whole JavaScript bundle lives in
+      # _expo, so without this the page loads and the app never starts.
+      - name: Disable Jekyll
+        run: touch dist/.nojekyll
+
+      # Pages serves 404.html for any unknown path. Pointing it at the app's
+      # own not-found screen keeps a mistyped link inside the app instead of
+      # dropping the user on GitHub's error page.
+      - name: Add 404 fallback
+        run: cp dist/+not-found.html dist/404.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
