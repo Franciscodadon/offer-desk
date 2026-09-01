@@ -17,7 +17,13 @@ export type TextVariant =
   | 'caption'
   /** Numbers: monospace with tabular figures so columns align. */
   | 'mono'
-  | 'monoLarge';
+  | 'monoLarge'
+  /**
+   * A single large standalone number: a stat tile value or a hero figure.
+   * Uses proportional figures on purpose. Tabular numerals exist so columns of
+   * numbers line up; on one big number they only make it look loose.
+   */
+  | 'figure';
 
 export type TextTone = 'default' | 'muted' | 'subtle' | 'accent' | 'positive' | 'negative' | 'onAccent';
 
@@ -75,6 +81,12 @@ const variantStyles = StyleSheet.create({
     fontSize: fontSize['2xl'],
     lineHeight: lineHeight['2xl'],
     fontVariant: ['tabular-nums'],
+  },
+  figure: {
+    fontFamily: fontFamily.bodySemiBold,
+    fontSize: fontSize['2xl'],
+    lineHeight: lineHeight['2xl'],
+    letterSpacing: -0.5,
   },
 });
 

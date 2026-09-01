@@ -54,6 +54,22 @@ export type Theme = {
 
     overlay: string;
   };
+  /**
+   * Chart-specific colors. Deliberately not the UI accent: that step is tuned
+   * for text and button contrast, and in dark mode it is too light to sit as a
+   * large filled area. These steps were checked against each theme's chart
+   * surface for lightness band, chroma, and contrast rather than picked by eye.
+   */
+  chart: {
+    /** Fill for a single-series bar. */
+    bar: string;
+    /** The same series, de-emphasized (context bars behind the point). */
+    barMuted: string;
+    /** Hairline baseline and gridlines, one step off the surface. */
+    grid: string;
+    /** The 2px gap between touching bars is painted in the surface color. */
+    surface: string;
+  };
   shadow: {
     card: {
       shadowColor: string;
@@ -97,6 +113,12 @@ export const lightTheme: Theme = {
     negative: palette.red600,
 
     overlay: 'rgba(15, 23, 42, 0.45)',
+  },
+  chart: {
+    bar: palette.emerald600,
+    barMuted: palette.slate300,
+    grid: palette.slate200,
+    surface: palette.slate0,
   },
   shadow: {
     card: {
@@ -142,6 +164,14 @@ export const darkTheme: Theme = {
     negative: palette.red400,
 
     overlay: 'rgba(2, 6, 23, 0.6)',
+  },
+  chart: {
+    // A step darker than the dark-mode UI accent, which sits above the
+    // lightness band a large fill should occupy.
+    bar: '#059669',
+    barMuted: palette.slate700,
+    grid: '#1E2A3D',
+    surface: palette.slate900,
   },
   shadow: {
     card: {
