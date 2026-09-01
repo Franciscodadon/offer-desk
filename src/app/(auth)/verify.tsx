@@ -56,8 +56,20 @@ export default function VerifyScreen() {
 
     const result = await resendEmailCode(address);
     setResending(false);
-    setNotice(result.error ? null : 'Sent. Check your inbox for a new code.');
-    if (result.error) setError(result.error);
+
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+
+    // Supabase accepting the request is not the same as the mail arriving. Its
+    // built-in mailer is rate limited and, on a new project, only delivers to
+    // addresses belonging to the project's own team - so a resend to any other
+    // address succeeds here and silently never shows up. Saying only "sent"
+    // sends people to refresh an inbox that will stay empty.
+    setNotice(
+      'Requested. If nothing arrives within a minute, Supabase is either rate limiting the send or refusing to deliver to this address, which its built-in mailer does for anyone outside the project team. Turning off Confirm email in Supabase (Authentication, Sign In / Providers, Email) skips this step entirely.',
+    );
   }
 
   if (address.length === 0) {

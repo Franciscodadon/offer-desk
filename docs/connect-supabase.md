@@ -127,6 +127,28 @@ wherever the web build runs (`http://localhost:8081` during development), and
 add `offerdesk://` to the redirect allow-list so confirmation links can return
 to the mobile app.
 
+## A note on confirmation email
+
+Supabase's built-in mailer is for development, not for running a team on. It is
+rate limited to a handful of messages an hour, and on a new project it will
+only deliver to addresses that belong to the project's own organization. A
+confirmation sent to anyone else is accepted by the API and then never arrives,
+which looks exactly like a lost email.
+
+That leaves two workable setups:
+
+- **Internal team, now:** turn off **Confirm email** under Authentication ->
+  Sign In / Providers -> Email. Everyone signing up is already trusted, and it
+  removes the whole failure mode. Turn it back on before outside users get
+  accounts.
+- **Real users, later:** configure custom SMTP under Authentication -> Emails
+  (Resend and Postmark both have free tiers). That is required before anyone
+  outside the organization can confirm an account at all, and it is the same
+  work PRD 10 anticipates for transactional email.
+
+If an account is already stuck half-confirmed, delete it under Authentication
+-> Users and sign up again once the setting is changed.
+
 ## 7. Confirm it works
 
 Log a deal from the pipeline, then reload the page. If it is still there, the

@@ -236,7 +236,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         type: 'signup',
         email: email.trim().toLowerCase(),
       });
-      return { error: error ? error.message : null };
+
+      if (!error) return { error: null };
+
+      // Supabase rate-limits confirmation email and says how long to wait, so
+      // pass that through rather than a generic failure.
+      const normalized = error.message.toLowerCase();
+      if (normalized.includes('security purposes') || normalized.includes('rate limit')) {
+        return {
+          error: `${error.message} Repeated attempts extend the wait rather than shortening it.`,
+        };
+      }
+      return { error: error.message };
     },
     [],
   );
