@@ -8,6 +8,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { Button, Card, Screen, Text } from '@/components/ui';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { EMPTY_VALUE } from '@/lib/format';
 import { radii, spacing } from '@/theme/tokens';
 import { useTheme, useThemePreference, type ThemePreference } from '@/theme';
 
@@ -32,7 +33,7 @@ export default function SettingsScreen() {
         <Text variant="label" tone="muted">
           Workspace
         </Text>
-        <Row label="Name" value={org?.name ?? '--'} />
+        <Row label="Name" value={org?.name ?? EMPTY_VALUE} />
         <Row label="Buyer entity" value={org?.buyer_entity ?? 'Not set'} />
         <Row label="Signatory" value={org?.signatory_name ?? 'Not set'} />
         <Text variant="caption" tone="subtle">
@@ -44,9 +45,9 @@ export default function SettingsScreen() {
         <Text variant="label" tone="muted">
           Account
         </Text>
-        <Row label="Name" value={profile?.name ?? '--'} />
-        <Row label="Email" value={profile?.email ?? '--'} />
-        <Row label="Role" value={profile?.role ?? '--'} />
+        <Row label="Name" value={profile?.name ?? EMPTY_VALUE} />
+        <Row label="Email" value={profile?.email ?? EMPTY_VALUE} />
+        <Row label="Role" value={profile?.role ?? EMPTY_VALUE} />
       </Card>
 
       <Card>

@@ -1,10 +1,17 @@
 /**
  * Domain records - PRD 9 data model.
  *
- * These are the shapes the app works with. `src/lib/database.types.ts` holds the
- * literal Postgres row shapes the Supabase client returns; the two are kept in
- * sync by hand until the schema is stable enough to generate types from.
+ * These are aliases of the Postgres row shapes rather than a parallel
+ * camelCase model. One definition per record means a column added to a
+ * migration cannot silently disagree with the type the screens use; the price
+ * is snake_case field names in the UI, which is a fair trade for removing a
+ * whole class of drift between three files.
+ *
+ * Semantic helpers that carry real logic live here too, since they belong to
+ * the domain rather than to any screen.
  */
+import type { Tables } from '@/lib/database.types';
+
 import type { DealStatus } from './status';
 
 export type Uuid = string;
@@ -13,167 +20,71 @@ export type Timestamp = string;
 /** ISO-8601 date, no time component. */
 export type DateOnly = string;
 
-export type OrgRole = 'owner' | 'admin' | 'member';
-export type ContactType = 'listing_agent' | 'buyer' | 'seller' | 'lender' | 'title' | 'other';
-export type AnalysisStrategy = 'wholesale' | 'flip' | 'brrrr' | 'turnkey';
-export type DocumentType = 'loi' | 'pof' | 'pitch' | 'other';
-export type TemplateKind = 'loi' | 'email';
-export type EmailProvider = 'gmail' | 'outlook';
-export type EmailAccountStatus = 'connected' | 'needs_reauth' | 'revoked';
+export type Org = Tables<'orgs'>;
+export type User = Tables<'users'>;
+export type Contact = Tables<'contacts'>;
+export type Deal = Tables<'deals'>;
+export type Property = Tables<'properties'>;
+export type Analysis = Tables<'analyses'>;
+export type Comp = Tables<'comps'>;
+export type DocumentRecord = Tables<'documents'>;
+export type Template = Tables<'templates'>;
+export type EmailAccount = Tables<'email_accounts'>;
+export type Activity = Tables<'activities'>;
+export type Reminder = Tables<'reminders'>;
+export type Subscription = Tables<'subscriptions'>;
 
-/** Fields every table carries (PRD 9: timestamps + soft delete on all). */
-type Base = {
-  id: Uuid;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
-  deletedAt: Timestamp | null;
-};
+export type OrgRole = User['role'];
+export type ContactType = Contact['type'];
+export type AnalysisStrategy = Analysis['strategy'];
+export type DocumentType = DocumentRecord['type'];
+export type TemplateKind = Template['kind'];
+export type EmailProvider = EmailAccount['provider'];
+export type EmailAccountStatus = EmailAccount['status'];
 
-/** Everything except `orgs` itself is scoped to an org for RLS isolation. */
-type OrgScoped = Base & { orgId: Uuid };
-
-export type Org = Base & {
-  name: string;
-  logoUrl: string | null;
-  signatoryName: string | null;
-  signatoryTitle: string | null;
-  buyerEntity: string | null;
-  /** Default LOI terms merged into new deals: EMD, inspection days, close days. */
-  defaultTerms: DefaultTerms;
-  plan: string;
-};
-
+/**
+ * Org-level defaults merged into new deals and LOIs. Stored as JSONB, so this
+ * describes the shape rather than constraining it at the database level.
+ */
 export type DefaultTerms = {
   emd?: number;
   inspectionDays?: number;
   closeDays?: number;
   /** Assignment fee used to seed the wholesale analyzer. */
   assignmentFee?: number;
-  /** Default MAO percentage, e.g. 0.7 for the 70% rule. */
+  /** Default MAO as a ratio, e.g. 0.7 for the 70% rule. */
   maoPct?: number;
-  /** Negotiation buffer applied to the initial seller offer. */
+  /** Negotiation buffer applied to the initial seller offer, as a ratio. */
   negotiationBuffer?: number;
 };
 
-export type User = OrgScoped & {
-  email: string;
-  name: string | null;
-  role: OrgRole;
-  authProvider: string | null;
-};
-
-export type Contact = OrgScoped & {
-  name: string;
-  brokerage: string | null;
-  phone: string | null;
-  email: string | null;
-  type: ContactType;
-};
-
-export type Deal = OrgScoped & {
-  address: string;
-  city: string | null;
-  state: string | null;
-  zip: string | null;
-  parcelId: string | null;
-  mls: string | null;
-  agentId: Uuid | null;
-  listPrice: number | null;
-  offerPrice: number | null;
-  status: DealStatus;
-  /** Date the offer went out. Drives the weekly KPI count. */
-  submittedAt: DateOnly | null;
-  nextActionAt: DateOnly | null;
-  assigneeId: Uuid | null;
-  notes: string | null;
-};
-
-export type Property = OrgScoped & {
-  dealId: Uuid;
-  beds: number | null;
-  baths: number | null;
-  sqft: number | null;
-  lotSqft: number | null;
-  yearBuilt: number | null;
-  subdivision: string | null;
-  listingUrl: string | null;
-  appraiserUrl: string | null;
-  permitNo: string | null;
-  permitUrl: string | null;
-  isVacant: boolean | null;
-};
-
-export type Analysis = OrgScoped & {
-  dealId: Uuid;
-  strategy: AnalysisStrategy;
-  arv: number | null;
-  repairs: number | null;
-  maoPct: number | null;
-  market: string | null;
-  purchase: number | null;
-  targetProfit: number | null;
-  /** Strategy-specific inputs. Shapes land with the analyzer in v1. */
-  inputs: Record<string, unknown>;
-  /** Snapshot of computed outputs at save time. */
-  computed: Record<string, unknown>;
-};
-
-export type Comp = OrgScoped & {
-  dealId: Uuid;
-  address: string;
-  beds: number | null;
-  baths: number | null;
-  sqft: number | null;
-  distanceMi: number | null;
-  soldPrice: number | null;
-  soldDate: DateOnly | null;
-  link: string | null;
-};
-
-export type DocumentRecord = OrgScoped & {
-  dealId: Uuid | null;
-  type: DocumentType;
-  storagePath: string;
-  url: string | null;
-  version: number;
-};
-
-export type Template = OrgScoped & {
-  kind: TemplateKind;
-  name: string;
-  body: string;
-  variant: string | null;
-  isDefault: boolean;
-};
-
-export type EmailAccount = OrgScoped & {
-  userId: Uuid;
-  provider: EmailProvider;
-  address: string;
-  displayName: string | null;
-  tokenExpiresAt: Timestamp | null;
-  isDefault: boolean;
-  status: EmailAccountStatus;
-  // Note: refresh/access tokens are deliberately absent. They live in columns
-  // that RLS never exposes to the client - only Edge Functions read them.
-};
-
-export type Activity = OrgScoped & {
-  dealId: Uuid | null;
-  userId: Uuid | null;
-  type: string;
-  payload: Record<string, unknown>;
-  at: Timestamp;
-};
-
-export type Reminder = OrgScoped & {
-  dealId: Uuid;
-  dueAt: Timestamp;
-  done: boolean;
-};
-
-/** Offer price as a percentage of list price - shown on every pipeline row. */
-export function offerToList(deal: Pick<Deal, 'offerPrice' | 'listPrice'>): number | null {
-  if (deal.offerPrice == null || deal.listPrice == null || deal.listPrice === 0) return null;
-  return deal.offerPrice / deal.listPrice;
+/** Reads the org's default terms out of the JSONB column safely. */
+export function readDefaultTerms(org: Pick<Org, 'default_terms'> | null | undefined): DefaultTerms {
+  const raw = org?.default_terms;
+  if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return {};
+  return raw as DefaultTerms;
 }
+
+/**
+ * Offer price as a share of list price - shown on every pipeline row (PRD 7.2).
+ * Null rather than 0 when either side is missing, so an unpriced deal shows a
+ * dash instead of an alarming 0%.
+ */
+export function offerToList(
+  deal: Pick<Deal, 'offer_price' | 'list_price'>,
+): number | null {
+  if (deal.offer_price == null || deal.list_price == null || deal.list_price === 0) {
+    return null;
+  }
+  return deal.offer_price / deal.list_price;
+}
+
+/** A deal with the related rows the detail screen and pitch generator need. */
+export type DealWithRelations = Deal & {
+  property: Property | null;
+  agent: Contact | null;
+  comps: Comp[];
+  analyses: Analysis[];
+};
+
+export type { DealStatus };

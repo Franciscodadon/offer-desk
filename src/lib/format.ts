@@ -5,6 +5,13 @@
  * never for math - callers pass exact numbers and format at the edge.
  */
 
+/**
+ * Placeholder for a value that is not known yet. A single en dash rather than
+ * two hyphens: monospaced tabular figures render "--" as two widely spaced
+ * dashes, which reads as a glitch rather than as "no value".
+ */
+export const EMPTY_VALUE = '\u2013';
+
 const usd = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
@@ -20,13 +27,13 @@ const usdCents = new Intl.NumberFormat('en-US', {
 
 /** `$237,483`. Whole dollars, the default everywhere in the app. */
 export function formatMoney(value: number | null | undefined): string {
-  if (value == null || !Number.isFinite(value)) return '--';
+  if (value == null || !Number.isFinite(value)) return EMPTY_VALUE;
   return usd.format(Math.round(value));
 }
 
 /** `$1,234.56`. Only where cents matter, such as per-sqft figures. */
 export function formatMoneyCents(value: number | null | undefined): string {
-  if (value == null || !Number.isFinite(value)) return '--';
+  if (value == null || !Number.isFinite(value)) return EMPTY_VALUE;
   return usdCents.format(value);
 }
 
@@ -34,13 +41,13 @@ export function formatMoneyCents(value: number | null | undefined): string {
  * `14.0%`. Takes a ratio (0.14), not a percentage number.
  */
 export function formatPercent(ratio: number | null | undefined, digits = 1): string {
-  if (ratio == null || !Number.isFinite(ratio)) return '--';
+  if (ratio == null || !Number.isFinite(ratio)) return EMPTY_VALUE;
   return `${(ratio * 100).toFixed(digits)}%`;
 }
 
 /** `1,850` - counts, sqft, and other bare numbers. */
 export function formatNumber(value: number | null | undefined, digits = 0): string {
-  if (value == null || !Number.isFinite(value)) return '--';
+  if (value == null || !Number.isFinite(value)) return EMPTY_VALUE;
   return value.toLocaleString('en-US', {
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
@@ -49,9 +56,9 @@ export function formatNumber(value: number | null | undefined, digits = 0): stri
 
 /** `Aug 31, 2026` from an ISO date or timestamp. */
 export function formatDate(value: string | null | undefined): string {
-  if (!value) return '--';
+  if (!value) return EMPTY_VALUE;
   const date = parseDate(value);
-  if (!date) return '--';
+  if (!date) return EMPTY_VALUE;
   return date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',

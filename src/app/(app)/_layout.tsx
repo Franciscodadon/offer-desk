@@ -39,6 +39,10 @@ export default function AppLayout() {
       <Tabs.Screen name="pipeline" options={{ title: 'Pipeline' }} />
       <Tabs.Screen name="dashboard" options={{ title: 'Dashboard' }} />
       <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
+      {/* Reached from the pipeline, not from the tab bar. `href: null` keeps
+          these routes navigable while hiding them as tabs. */}
+      <Tabs.Screen name="deal/new" options={{ href: null }} />
+      <Tabs.Screen name="deal/[id]" options={{ href: null }} />
     </Tabs>
   );
 }

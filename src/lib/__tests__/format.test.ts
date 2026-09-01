@@ -1,4 +1,5 @@
 import {
+  EMPTY_VALUE,
   formatDate,
   formatMoney,
   formatNumber,
@@ -17,9 +18,13 @@ describe('formatMoney', () => {
   });
 
   it('renders a placeholder for missing values', () => {
-    expect(formatMoney(null)).toBe('--');
-    expect(formatMoney(undefined)).toBe('--');
-    expect(formatMoney(Number.NaN)).toBe('--');
+    expect(formatMoney(null)).toBe(EMPTY_VALUE);
+    expect(formatMoney(undefined)).toBe(EMPTY_VALUE);
+    expect(formatMoney(Number.NaN)).toBe(EMPTY_VALUE);
+  });
+
+  it('uses a single-glyph placeholder, so tabular figures do not space it out', () => {
+    expect(EMPTY_VALUE).toHaveLength(1);
   });
 });
 
@@ -42,6 +47,11 @@ describe('formatNumber', () => {
 describe('formatDate', () => {
   it('does not shift a bare date across a time-zone boundary', () => {
     expect(formatDate('2026-08-31')).toBe('Aug 31, 2026');
+  });
+
+  it('renders the placeholder for a missing date', () => {
+    expect(formatDate(null)).toBe(EMPTY_VALUE);
+    expect(formatDate('not a date')).toBe(EMPTY_VALUE);
   });
 });
 
