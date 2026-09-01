@@ -32,6 +32,7 @@ import { formatMoney, formatPercent } from '@/lib/format';
 import { spacing } from '@/theme/tokens';
 
 import { MoneyInput, NumberInput, PercentInput, ResultRow, VerdictPill, fieldStyles } from './fields';
+import { MaoPresets } from './MaoPresets';
 
 /** Reports the live inputs and computed outputs so the screen can save them. */
 export type EditorReport<TInputs> = (state: {
@@ -76,13 +77,12 @@ export function WholesaleEditor({
             onChange={(v) => set('repairs', v)}
           />
         </View>
+        <MaoPresets
+          value={inputs.maoPct}
+          onChange={(v) => set('maoPct', v)}
+          buyerPrice={result.buyerPrice}
+        />
         <View style={fieldStyles.row}>
-          <PercentInput
-            label="Buyer MAO %"
-            value={inputs.maoPct}
-            onChange={(v) => set('maoPct', v)}
-            hint="The 70% rule is 70."
-          />
           <MoneyInput
             label="Assignment fee"
             value={inputs.assignmentFee}
@@ -445,7 +445,6 @@ export function BrrrrEditor({
           <MoneyInput label="Purchase" value={inputs.purchase} onChange={(v) => set('purchase', v)} />
         </View>
         <View style={fieldStyles.row}>
-          <PercentInput label="MAO %" value={inputs.maoPct} onChange={(v) => set('maoPct', v)} />
           <PercentInput
             label="Closing %"
             value={inputs.closingPct}
@@ -453,6 +452,15 @@ export function BrrrrEditor({
             hint="Of price + rehab."
           />
         </View>
+      </Card>
+
+      <Card>
+        <MaoPresets
+          value={inputs.maoPct}
+          onChange={(v) => set('maoPct', v)}
+          buyerPrice={result.mao}
+          label="MAO percentage"
+        />
       </Card>
 
       <Card>

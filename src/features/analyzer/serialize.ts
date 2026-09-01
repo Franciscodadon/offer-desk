@@ -10,6 +10,7 @@
  * arithmetic as NaN.
  */
 import {
+  DEFAULT_MAO_PCT,
   defaultLoan,
   emptyHolding,
   emptyTransaction,
@@ -129,7 +130,7 @@ export function readWholesaleInputs(
   return {
     arv: col(analysis?.arv, seed.arv),
     repairs: col(analysis?.repairs, seed.repairs),
-    maoPct: col(analysis?.mao_pct, seed.terms.maoPct ?? 0.7),
+    maoPct: col(analysis?.mao_pct, seed.terms.maoPct ?? DEFAULT_MAO_PCT),
     assignmentFee: num(source, 'assignmentFee', seed.terms.assignmentFee ?? 10000),
     negotiationBuffer: num(
       source,
@@ -158,7 +159,7 @@ export function readBrrrrInputs(analysis: Analysis | null, seed: AnalysisSeed): 
   return {
     arv: col(analysis?.arv, seed.arv),
     repairs: col(analysis?.repairs, seed.repairs),
-    maoPct: col(analysis?.mao_pct, seed.terms.maoPct ?? 0.75),
+    maoPct: col(analysis?.mao_pct, seed.terms.maoPct ?? DEFAULT_MAO_PCT),
     purchase: col(analysis?.purchase, seed.purchase),
     closingPct: num(source, 'closingPct', 0.03),
     ltvPct: num(source, 'ltvPct', 0.75),
