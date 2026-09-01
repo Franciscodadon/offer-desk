@@ -57,7 +57,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "test": "jest",
+    "test": "jest --testPathIgnorePatterns \"integration\"",
     "test:watch": "jest --watch",
     "db:test": "./scripts/db-test.sh",
     "typecheck": "tsc --noEmit",
@@ -65,7 +65,8 @@
     "db:stop": "supabase stop",
     "db:status": "supabase status",
     "db:reset": "supabase db reset",
-    "db:push": "supabase db push"
+    "db:push": "supabase db push",
+    "test:integration": "jest --testMatch \"**/*.integration.test.ts\""
   },
   "private": true
 }

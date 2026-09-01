@@ -113,6 +113,7 @@ through the real UI so a units bug in a percent field cannot quietly break it.
 | `npm run db:status` | Prints the local API URL and anon key |
 | `npm run db:push` | Pushes migrations to a linked hosted project |
 | `npm run db:test` | Applies every migration to a scratch Postgres and runs the RLS isolation tests |
+| `npm run test:integration` | Runs the app's real data layer against a real PostgREST (see below) |
 
 `npm run db:test` needs a local Postgres. It never touches your Supabase
 project — it drops and recreates a scratch database, so do not point it at

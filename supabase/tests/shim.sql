@@ -34,15 +34,38 @@ create table if not exists auth.users (
   created_at timestamptz default now()
 );
 
--- Supabase derives this from the request JWT. Locally it reads a session
--- setting so a test can impersonate a user.
+-- Supabase derives this from the request JWT. This mirrors the real
+-- definition, which reads both the legacy per-claim setting and the JSON
+-- claims blob:
+--   * `request.jwt.claim.sub` is what a psql test sets directly to impersonate
+--     a user, and what PostgREST set before v9.
+--   * `request.jwt.claims` is the JSON blob PostgREST v9+ sets from the bearer
+--     token, so the same policies work under a real API server.
+-- Reading only the first is what makes RLS silently deny everything when the
+-- policies are exercised through PostgREST rather than through psql.
 create or replace function auth.uid()
 returns uuid
 language sql
 stable
 as $$
-  select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid;
+  select coalesce(
+    nullif(current_setting('request.jwt.claim.sub', true), ''),
+    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
+  )::uuid;
 $$;
+
+-- PostgREST connects as `authenticator` and switches into anon or
+-- authenticated per request, based on the token's role claim.
+do $$
+begin
+  if not exists (select 1 from pg_roles where rolname = 'authenticator') then
+    create role authenticator noinherit login password 'postgres';
+  end if;
+end;
+$$;
+
+grant anon, authenticated, service_role to authenticator;
+grant usage on schema auth, storage to anon, authenticated, service_role;
 
 create table if not exists storage.buckets (
   id text primary key,

@@ -51,6 +51,14 @@ npm test            # jest
 npm run db:test     # migrations + RLS isolation, needs a local Postgres
 ```
 
+When you touch a policy, a grant, or anything in `src/features/*/api.ts`, also
+run the integration tests. They are the only thing that proves the policies and
+the queries agree:
+
+```bash
+./scripts/integration-up.sh && npm run test:integration
+```
+
 ## Gotcha: env changes need a cache clear
 
 Metro caches the transform that inlines `EXPO_PUBLIC_*` values. After editing
