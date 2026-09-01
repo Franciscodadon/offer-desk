@@ -70,6 +70,25 @@ export const radii = {
 } as const;
 
 /**
+ * Layout breakpoints, in dp. The two measure different boxes, which is why
+ * there are two of them - see theme/ContentWidth.
+ */
+export const breakpoint = {
+  /**
+   * Width of the whole app frame at which navigation moves from a bottom tab
+   * bar to a left rail. A landscape tablet gets the rail; a portrait one does
+   * not, because below this the rail costs more width than it earns.
+   */
+  wide: 1024,
+  /**
+   * Width of a screen's own content area at which it may lay out in two
+   * columns. Lower than `wide` because the rail has already taken its 208dp
+   * by the time a screen is measuring itself.
+   */
+  deck: 880,
+} as const;
+
+/**
  * Minimum 44pt tap targets (PRD 12: accessibility, one-thumb use in a driveway).
  */
 export const sizing = {

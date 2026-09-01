@@ -10,14 +10,28 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { spacing } from '@/theme/tokens';
 import { useTheme } from '@/theme/ThemeProvider';
 
+/** Comfortable reading width for a form, which is most screens here. */
+const DEFAULT_MAX_WIDTH = 720;
+
 type Props = {
   children: ReactNode;
   scroll?: boolean;
   /** Centers content vertically. Used by the auth and setup screens. */
   center?: boolean;
+  /**
+   * Widest the content is allowed to get. The default keeps forms readable on
+   * a big monitor; the dashboard raises it, because a deck of panels is the
+   * one screen here that has something to do with the extra width.
+   */
+  maxWidth?: number;
 };
 
-export function Screen({ children, scroll = true, center = false }: Props) {
+export function Screen({
+  children,
+  scroll = true,
+  center = false,
+  maxWidth = DEFAULT_MAX_WIDTH,
+}: Props) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 
@@ -31,6 +45,7 @@ export function Screen({ children, scroll = true, center = false }: Props) {
     <ScrollView
       contentContainerStyle={[
         styles.content,
+        { maxWidth },
         padding,
         center && styles.centered,
       ]}
@@ -42,7 +57,9 @@ export function Screen({ children, scroll = true, center = false }: Props) {
       {children}
     </ScrollView>
   ) : (
-    <View style={[styles.content, padding, center && styles.centered, styles.flex]}>{children}</View>
+    <View style={[styles.content, { maxWidth }, padding, center && styles.centered, styles.flex]}>
+      {children}
+    </View>
   );
 
   return (
@@ -60,7 +77,6 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     gap: spacing.lg,
-    maxWidth: 720,
     width: '100%',
     // Keeps the web build from stretching forms across a wide monitor.
     alignSelf: 'center',
