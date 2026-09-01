@@ -25,6 +25,22 @@ import { getSupabase } from '@/lib/supabase';
 export type Profile = Tables<'users'>;
 export type Org = Tables<'orgs'>;
 
+/**
+ * Why a signed-in account has no workspace. These are different problems with
+ * different fixes, and telling them apart is the difference between a useful
+ * screen and a blank one.
+ */
+export type WorkspaceProblem =
+  /** The schema was never applied, so the tables the app reads do not exist. */
+  | { kind: 'schema_missing'; message: string }
+  /**
+   * The tables exist but this account has no row in them. The signup trigger
+   * creates it, so this means the account predates the schema being applied.
+   */
+  | { kind: 'no_profile'; message: string }
+  /** Anything else, passed through rather than guessed at. */
+  | { kind: 'unknown'; message: string };
+
 type AuthState = {
   /** False until the stored session has been read from disk. */
   initialized: boolean;
@@ -33,6 +49,8 @@ type AuthState = {
   org: Org | null;
   /** Set when the last auth action failed, for display on the auth screens. */
   error: string | null;
+  /** Set when the account is signed in but has no usable workspace. */
+  workspaceProblem: WorkspaceProblem | null;
 };
 
 type AuthContextValue = AuthState & {
@@ -76,6 +94,33 @@ function readableAuthError(message: string): string {
   return message;
 }
 
+/**
+ * Reads a failed profile lookup. PostgREST reports a missing table distinctly
+ * from an empty result, and the two need different instructions: one means the
+ * schema was never applied, the other that this account predates it.
+ */
+function classifyWorkspaceProblem(
+  error: { code?: string; message: string } | null,
+): WorkspaceProblem {
+  if (!error) {
+    return {
+      kind: 'no_profile',
+      message: 'This account signed in, but it has no workspace row.',
+    };
+  }
+
+  const code = error.code ?? '';
+  const message = error.message ?? '';
+  const looksMissing =
+    code === '42P01' ||
+    code === 'PGRST205' ||
+    /does not exist|schema cache|could not find the table/i.test(message);
+
+  return looksMissing
+    ? { kind: 'schema_missing', message }
+    : { kind: 'unknown', message };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({
     // With no Supabase project wired up there is no session to wait for, so the
@@ -85,6 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     profile: null,
     org: null,
     error: null,
+    workspaceProblem: null,
   });
 
   const loadProfile = useCallback(async (session: Session | null) => {
@@ -101,13 +147,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .maybeSingle();
 
     if (profileError || !profile) {
-      // The signup trigger creates this row. If it is missing the account is in
-      // a broken state, so surface it rather than rendering an empty pipeline.
       setState((prev) => ({
         ...prev,
         profile: null,
         org: null,
-        error: profileError?.message ?? 'This account has no workspace yet.',
+        workspaceProblem: classifyWorkspaceProblem(profileError),
       }));
       return;
     }
@@ -118,7 +162,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .eq('id', profile.org_id)
       .maybeSingle();
 
-    setState((prev) => ({ ...prev, profile, org: org ?? null, error: null }));
+    setState((prev) => ({
+      ...prev,
+      profile,
+      org: org ?? null,
+      error: null,
+      workspaceProblem: null,
+    }));
   }, []);
 
   useEffect(() => {

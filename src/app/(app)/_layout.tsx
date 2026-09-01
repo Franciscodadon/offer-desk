@@ -6,19 +6,25 @@
 import { Redirect, Tabs } from 'expo-router';
 
 import { useAuth } from '@/features/auth/AuthProvider';
+import { WorkspaceUnavailable } from '@/features/auth/WorkspaceUnavailable';
 import { isSupabaseConfigured } from '@/lib/env';
 import { fontFamily, fontSize } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 
 export default function AppLayout() {
   const theme = useTheme();
-  const { isSignedIn, orgId } = useAuth();
+  const { isSignedIn, orgId, workspaceProblem } = useAuth();
 
   if (!isSupabaseConfigured) return <Redirect href="/setup" />;
   if (!isSignedIn) return <Redirect href="/sign-in" />;
-  // Signed in but the profile row has not arrived yet. Render nothing for the
-  // one frame it takes rather than flashing an empty pipeline.
-  if (!orgId) return null;
+  // Signed in but no workspace. If the lookup already failed, say why: this
+  // used to render null, which is right for the frame between a session
+  // arriving and the profile loading, and a permanent blank page when the
+  // profile never arrives at all.
+  if (!orgId) {
+    if (workspaceProblem) return <WorkspaceUnavailable problem={workspaceProblem} />;
+    return null;
+  }
 
   return (
     <Tabs
