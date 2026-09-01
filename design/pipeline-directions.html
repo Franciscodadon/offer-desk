@@ -1,0 +1,931 @@
+<title>Pipeline Report Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Deliberately single-world: a dark review table with the real light-theme
+     app frames laid on it, the way you'd pin printouts to a wall. Every color
+     is painted explicitly so it holds on either host ground. */
+  :root {
+    --table: #0B1220;
+    --table-2: #131C2E;
+    --table-line: #21304A;
+    --table-ink: #E6EDF7;
+    --table-ink-2: #93A4BE;
+    --table-ink-3: #6B7C96;
+
+    /* Offer Desk light theme, verbatim from src/theme. */
+    --bg: #F8FAFC;
+    --surface: #FFFFFF;
+    --surface-muted: #F1F5F9;
+    --border: #E2E8F0;
+    --border-strong: #CBD5E1;
+    --ink: #0F172A;
+    --ink-muted: #475569;
+    --ink-subtle: #64748B;
+    --accent: #0E7A57;
+    --accent-press: #0B6046;
+    --accent-muted: #ECFDF5;
+    --accent-text: #0B6046;
+    --danger: #DC2626;
+    --warn: #B45309;
+    --warn-muted: #FEF3C7;
+
+    /* Chart slots. Validated: CVD ΔE 9.0 worst adjacent, all ≥3:1 on white.
+       The slate is a deliberate de-emphasis slot, not a categorical hue. */
+    --c-good: #0E7A57;
+    --c-bad: #DC2626;
+    --c-mute: #64748B;
+    --seq-1: #A7F3D0;
+    --seq-2: #34D399;
+    --seq-3: #0E7A57;
+    --seq-4: #094A36;
+    --grid: #E2E8F0;
+  }
+
+  body {
+    background: var(--table);
+    color: var(--table-ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .page { max-width: 1400px; margin: 0 auto; padding: 56px 28px 96px; }
+
+  .lede { max-width: 62ch; }
+  .kicker {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--table-ink-3); margin: 0 0 14px;
+  }
+  h1 {
+    font-family: Archivo, system-ui, sans-serif; font-weight: 700;
+    font-size: 40px; line-height: 1.1; margin: 0 0 16px;
+    letter-spacing: -0.02em; text-wrap: balance; color: var(--table-ink);
+  }
+  .lede p { color: var(--table-ink-2); font-size: 16px; margin: 0 0 12px; }
+  .lede strong { color: var(--table-ink); font-weight: 600; }
+
+  .rule { height: 1px; background: var(--table-line); border: 0; margin: 44px 0; }
+
+  /* --- Direction block ------------------------------------------------ */
+  .dir { margin: 0 0 20px; }
+  .dir-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 6px; }
+  .dir-letter {
+    font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600;
+    color: var(--table); background: var(--table-ink-2);
+    padding: 3px 9px; border-radius: 4px; letter-spacing: 0.04em;
+  }
+  .dir-head h2 {
+    font-family: Archivo, system-ui, sans-serif; font-size: 26px; font-weight: 600;
+    margin: 0; letter-spacing: -0.01em; color: var(--table-ink);
+  }
+  .dir-thesis { color: var(--table-ink-2); font-size: 15px; margin: 0 0 18px; max-width: 74ch; }
+  .dir-notes {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 14px; margin: 18px 0 0;
+  }
+  .note {
+    background: var(--table-2); border: 1px solid var(--table-line);
+    border-radius: 8px; padding: 12px 14px;
+  }
+  .note dt {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--table-ink-3); margin-bottom: 5px;
+  }
+  .note dd { margin: 0; font-size: 13.5px; color: var(--table-ink-2); }
+
+  /* --- The scroll frame ----------------------------------------------- */
+  .scroller {
+    overflow-x: auto; border-radius: 12px;
+    background: var(--table-2); border: 1px solid var(--table-line);
+    padding: 20px;
+  }
+  .frame {
+    width: 1240px; background: var(--bg); border-radius: 10px;
+    color: var(--ink); display: flex; overflow: hidden;
+    box-shadow: 0 18px 44px rgba(0,0,0,0.42);
+  }
+  .browser {
+    display: flex; align-items: center; gap: 6px; width: 1240px;
+    padding: 0 0 10px 4px;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 999px; background: var(--table-line); }
+  .browser span {
+    margin-left: 10px; font-family: "IBM Plex Mono", monospace;
+    font-size: 11px; color: var(--table-ink-3);
+  }
+
+  /* --- App shell ------------------------------------------------------ */
+  .rail {
+    width: 208px; flex: none; background: var(--surface);
+    border-right: 1px solid var(--border); padding: 18px 12px;
+    display: flex; flex-direction: column; gap: 22px;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; padding: 0 8px; }
+  .brand-mark {
+    width: 24px; height: 24px; border-radius: 6px; background: var(--accent);
+    color: #fff; font-family: Archivo, sans-serif; font-weight: 700; font-size: 13px;
+    display: grid; place-items: center;
+  }
+  .brand-name { font-family: Archivo, sans-serif; font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: block; padding: 8px 10px; border-radius: 7px; font-size: 13.5px;
+    color: var(--ink-muted); text-decoration: none;
+  }
+  .nav a.on { background: var(--accent-muted); color: var(--accent-text); font-weight: 600; }
+  .rail-foot { margin-top: auto; padding: 0 8px; font-size: 11.5px; color: var(--ink-subtle); }
+
+  .main { flex: 1; min-width: 0; padding: 22px 24px 28px; display: flex; flex-direction: column; gap: 16px; }
+  .topbar { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .topbar h3 {
+    font-family: Archivo, sans-serif; font-size: 22px; font-weight: 600;
+    margin: 0 0 2px; letter-spacing: -0.01em;
+  }
+  .topbar p { margin: 0; font-size: 13px; color: var(--ink-muted); }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    background: var(--accent); color: #fff; border: 0; border-radius: 9px;
+    padding: 10px 15px; font-size: 13.5px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+  }
+  .btn-ghost {
+    background: var(--surface); color: var(--ink-muted);
+    border: 1px solid var(--border-strong);
+  }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px;
+  }
+  .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--ink); margin: 0; }
+  .card-sub { font-size: 11.5px; color: var(--ink-subtle); margin: 0; }
+
+  .lbl {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-subtle);
+  }
+  .num { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
+  .fig { font-family: "IBM Plex Sans", sans-serif; font-weight: 600; letter-spacing: -0.02em; }
+
+  /* KPI strip */
+  .kpis { display: grid; gap: 10px; }
+  .kpis.four { grid-template-columns: repeat(4, 1fr); }
+  .kpis.six { grid-template-columns: repeat(6, 1fr); }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 12px 14px; }
+  .kpi .lbl { display: block; margin-bottom: 6px; }
+  .kpi-val { font-size: 26px; line-height: 1.1; }
+  .kpis.six .kpi-val { font-size: 22px; }
+  .kpi-foot { font-size: 11px; color: var(--ink-subtle); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+  .delta { font-weight: 600; font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+  .up { color: var(--accent-text); }
+  .down { color: var(--danger); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-23 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  .grid-32 { display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; }
+
+  /* Funnel */
+  .funnel { display: flex; flex-direction: column; }
+  .fn-row { display: grid; grid-template-columns: 132px 1fr 68px 122px; align-items: center; gap: 14px; padding: 9px 0; }
+  .fn-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+  .fn-track { height: 26px; background: var(--surface-muted); border-radius: 4px; position: relative; overflow: hidden; }
+  .fn-fill { height: 100%; background: var(--c-good); border-radius: 4px 4px 4px 4px; }
+  .fn-count { text-align: right; font-size: 17px; }
+  .fn-money { text-align: right; font-size: 12.5px; color: var(--ink-muted); white-space: nowrap; }
+  .fn-drop {
+    display: grid; grid-template-columns: 132px 1fr; gap: 14px;
+    font-size: 11.5px; color: var(--ink-subtle); padding: 0 0 4px;
+  }
+  .fn-drop span:first-child { text-align: right; }
+  .conv {
+    display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600;
+    background: var(--surface-muted); color: var(--ink-muted);
+    border-radius: 999px; padding: 2px 8px; font-family: "IBM Plex Mono", monospace;
+  }
+
+  /* Ledger table */
+  table.ledger { width: 100%; border-collapse: collapse; font-size: 13px; color: var(--ink); font-family: inherit; }
+  table.ledger th {
+    text-align: right; font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-subtle);
+    padding: 0 0 8px; border-bottom: 1px solid var(--border);
+  }
+  table.ledger th:first-child, table.ledger td:first-child { text-align: left; }
+  table.ledger td { padding: 9px 0; border-bottom: 1px solid var(--border); color: var(--ink); }
+  table.ledger td:not(:first-child) { text-align: right; font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
+  table.ledger th:not(:first-child) { padding-left: 16px; }
+  table.ledger td:not(:first-child) { padding-left: 16px; }
+  tr.band td {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-subtle); padding: 16px 0 6px; border-bottom: 1px solid var(--border-strong);
+  }
+  tr.band:first-child td { padding-top: 8px; }
+  tr.total td { font-weight: 600; color: var(--ink); border-bottom: 0; }
+  tr.total td:first-child { color: var(--ink-muted); font-size: 12px; }
+  .share { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+  .share-track {
+    display: block; width: 74px; height: 7px; flex: none;
+    background: var(--surface-muted); border-radius: 999px; overflow: hidden;
+  }
+  .share-fill { display: block; height: 100%; border-radius: 999px; }
+  .aged { color: var(--warn); font-weight: 600; }
+  .muted-cell { color: var(--ink-subtle); }
+
+  /* Stacked composition bar */
+  .stack { display: flex; gap: 2px; height: 34px; }
+  .stack div { border-radius: 3px; }
+  .stack-key { display: flex; gap: 18px; margin-top: 12px; flex-wrap: wrap; }
+  .key { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--ink-muted); }
+  .swatch { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .key b { font-family: "IBM Plex Mono", monospace; color: var(--ink); font-weight: 600; }
+
+  /* Work queue */
+  table.queue { width: 100%; border-collapse: collapse; font-size: 13px; color: var(--ink); font-family: inherit; }
+  table.queue th {
+    text-align: left; font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-subtle); padding: 0 0 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  table.queue td { padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--ink); }
+  table.queue tr:last-child td { border-bottom: 0; }
+  table.queue td.r, table.queue th.r { text-align: right; font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
+  .addr { font-weight: 500; }
+  .stage-dot { display: inline-block; width: 7px; height: 7px; border-radius: 999px; margin-right: 7px; }
+  .flag {
+    display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600;
+    background: var(--warn-muted); color: var(--warn); border-radius: 999px; padding: 2px 8px;
+  }
+
+  .hero-wrap { display: flex; align-items: baseline; gap: 12px; }
+  .hero { font-size: 52px; line-height: 1; letter-spacing: -0.03em; }
+  .hero-side { font-size: 13px; color: var(--ink-muted); }
+
+  .split-note { font-size: 12px; color: var(--ink-subtle); margin: 12px 0 0; }
+
+  .bar-caption { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-subtle); margin-top: 8px; }
+
+  @media (max-width: 760px) {
+    .page { padding: 36px 16px 72px; }
+    h1 { font-size: 30px; }
+  }
+</style>
+
+<div class="page">
+  <div class="lede">
+    <p class="kicker">Offer Desk · dashboard direction</p>
+    <h1>Where the pipeline stands, as a report</h1>
+    <p>Four ways to rebuild the dashboard so a laptop screen earns its width and the
+      pipeline panel reads like a report instead of a list of colored tags. All four
+      share the same desktop shell — a fixed left rail, a KPI strip, a real content
+      grid — so the choice below is about <strong>how the pipeline itself is drawn</strong>,
+      not about the chrome.</p>
+    <p>Same numbers in every frame: 40 deals logged, 32 offers sent, 19 live,
+      13 answered, 4 accepted. Pick one and I'll build it.</p>
+  </div>
+
+  <hr class="rule">
+
+  <!-- ================= A · THE FUNNEL ================= -->
+  <section class="dir">
+    <div class="dir-head">
+      <span class="dir-letter">A</span>
+      <h2>The funnel</h2>
+    </div>
+    <p class="dir-thesis">The pipeline is a conversion problem, so draw it as one. Every
+      stage shows how many survived, what it's worth, and the rate at which it feeds the
+      next stage. Where deals leave is annotated between the bars — that's the number
+      that tells you which part of your process is broken.</p>
+  </section>
+  <div class="scroller">
+    <div class="browser"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>offerdesk.app/dashboard</span></div>
+    <div class="frame">
+      <aside class="rail">
+        <div class="brand"><span class="brand-mark">O</span><span class="brand-name">Offer Desk</span></div>
+        <nav class="nav">
+          <a href="#a" class="on">Dashboard</a>
+          <a href="#a">Pipeline</a>
+          <a href="#a">Analyzer</a>
+          <a href="#a">Comps</a>
+          <a href="#a">Settings</a>
+        </nav>
+        <div class="rail-foot">Joseph Real Estate<br>Week of Aug 31</div>
+      </aside>
+      <div class="main">
+        <div class="topbar">
+          <div><h3>Dashboard</h3><p>Week of Aug 31 · 9 offers out so far</p></div>
+          <div class="topbar-actions">
+            <button class="btn btn-ghost" type="button">Export week</button>
+            <button class="btn" type="button">Log a new deal</button>
+          </div>
+        </div>
+
+        <div class="kpis four">
+          <div class="kpi"><span class="lbl">Offers this week</span>
+            <div class="kpi-val fig">9</div>
+            <div class="kpi-foot"><span class="delta up">+1</span> vs last week</div></div>
+          <div class="kpi"><span class="lbl">Acceptance rate</span>
+            <div class="kpi-val fig">31%</div>
+            <div class="kpi-foot">4 of 13 answered</div></div>
+          <div class="kpi"><span class="lbl">Pipeline value</span>
+            <div class="kpi-val fig">$2.85M</div>
+            <div class="kpi-foot">19 offers still live</div></div>
+          <div class="kpi"><span class="lbl">Avg offer to list</span>
+            <div class="kpi-val fig">71%</div>
+            <div class="kpi-foot">across 32 priced deals</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <p class="card-title">Where the pipeline stands</p>
+            <p class="card-sub">All deals · conversion at each step</p>
+          </div>
+          <div class="funnel">
+            <div class="fn-row">
+              <span class="fn-name">Deals logged</span>
+              <div class="fn-track"><div class="fn-fill" style="width:100%"></div></div>
+              <span class="fn-count num fig">40</span>
+              <span class="fn-money num">$5.92M ARV</span>
+            </div>
+            <div class="fn-drop"><span>▼ 8 passed</span><span>before an offer went out — 20% of everything you looked at</span></div>
+
+            <div class="fn-row">
+              <span class="fn-name">Offer sent</span>
+              <div class="fn-track"><div class="fn-fill" style="width:80%"></div></div>
+              <span class="fn-count num fig">32</span>
+              <span class="fn-money num">$4.68M offered</span>
+            </div>
+            <div class="fn-drop"><span>▼ 19 waiting</span><span>still live — 12 LOI sent, 7 in follow up</span></div>
+
+            <div class="fn-row">
+              <span class="fn-name">Seller answered</span>
+              <div class="fn-track"><div class="fn-fill" style="width:32.5%"></div></div>
+              <span class="fn-count num fig">13</span>
+              <span class="fn-money num">$1.84M</span>
+            </div>
+            <div class="fn-drop"><span>▼ 9 no</span><span>6 rejected by the seller, 3 dropped by your buyer</span></div>
+
+            <div class="fn-row">
+              <span class="fn-name">Accepted</span>
+              <div class="fn-track"><div class="fn-fill" style="width:10%"></div></div>
+              <span class="fn-count num fig">4</span>
+              <span class="fn-money num">$612K</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap">
+            <span class="conv">logged → sent&nbsp; 80%</span>
+            <span class="conv">sent → answered&nbsp; 41%</span>
+            <span class="conv">answered → accepted&nbsp; 31%</span>
+            <span class="conv" style="background:var(--accent-muted);color:var(--accent-text)">offer → close&nbsp; 12.5%</span>
+          </div>
+        </div>
+
+        <div class="grid-23">
+          <div class="card">
+            <div class="card-head">
+              <p class="card-title">Offers sent, last 8 weeks</p>
+              <p class="card-sub">Sun–Sat · current week still filling</p>
+            </div>
+            <svg viewBox="0 0 560 158" width="100%" height="158" role="img" aria-label="Offers sent per week: 3, 5, 4, 7, 6, 9, 8, 9">
+              <line x1="0" y1="130" x2="560" y2="130" stroke="#E2E8F0" stroke-width="1"></line>
+              <line x1="0" y1="89" x2="560" y2="89" stroke="#E2E8F0" stroke-width="1"></line>
+              <line x1="0" y1="48" x2="560" y2="48" stroke="#E2E8F0" stroke-width="1"></line>
+              <g fill="#0E7A57">
+                <rect x="14"  y="95"  width="24" height="35"  rx="4"></rect>
+                <rect x="82"  y="71"  width="24" height="59"  rx="4"></rect>
+                <rect x="150" y="83"  width="24" height="47"  rx="4"></rect>
+                <rect x="218" y="47"  width="24" height="83"  rx="4"></rect>
+                <rect x="286" y="59"  width="24" height="71"  rx="4"></rect>
+                <rect x="354" y="24"  width="24" height="106" rx="4"></rect>
+                <rect x="422" y="36"  width="24" height="94"  rx="4"></rect>
+                <rect x="490" y="24"  width="24" height="106" rx="4"></rect>
+              </g>
+              <text x="502" y="18" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#0F172A">9</text>
+              <g font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#64748B" text-anchor="middle">
+                <text x="26" y="150">Jul 6</text>
+                <text x="94" y="150">Jul 13</text>
+                <text x="162" y="150">Jul 20</text>
+                <text x="230" y="150">Jul 27</text>
+                <text x="298" y="150">Aug 3</text>
+                <text x="366" y="150">Aug 10</text>
+                <text x="434" y="150">Aug 17</text>
+                <text x="502" y="150">This wk</text>
+              </g>
+            </svg>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <p class="card-title">How the 13 answers landed</p>
+            </div>
+            <div class="stack">
+              <div style="flex:4;background:var(--c-good)"></div>
+              <div style="flex:6;background:var(--c-bad)"></div>
+              <div style="flex:3;background:var(--c-mute)"></div>
+            </div>
+            <div class="stack-key">
+              <span class="key"><i class="swatch" style="background:var(--c-good)"></i>Accepted <b>4</b></span>
+              <span class="key"><i class="swatch" style="background:var(--c-bad)"></i>Seller said no <b>6</b></span>
+              <span class="key"><i class="swatch" style="background:var(--c-mute)"></i>Buyer passed <b>3</b></span>
+            </div>
+            <p class="split-note">Three deals died after the seller said yes. That's a
+              buyer-list problem, not an offer problem.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <dl class="dir-notes">
+    <div class="note"><dt>Answers</dt><dd>Which step in my process is leaking, and what is it costing me?</dd></div>
+    <div class="note"><dt>Best when</dt><dd>You're tuning the machine — offer volume, buy box, buyer list.</dd></div>
+    <div class="note"><dt>Trade-off</dt><dd>Reads as history, not as a to-do list. It won't tell you who to call today.</dd></div>
+  </dl>
+
+  <hr class="rule">
+
+  <!-- ================= B · THE LEDGER ================= -->
+  <section class="dir">
+    <div class="dir-head">
+      <span class="dir-letter">B</span>
+      <h2>The ledger</h2>
+    </div>
+    <p class="dir-thesis">A real table, the way an operator reads a P&amp;L. Stages grouped
+      into live, answered and dead, with subtotals; every number right-aligned in
+      tabular figures so the columns actually line up. The share column carries an
+      inline bar, so it scans like a chart without becoming one. Aging is the column
+      that does the work — a 16-day-old follow up is flagged in the row, not buried.</p>
+  </section>
+  <div class="scroller">
+    <div class="browser"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>offerdesk.app/dashboard</span></div>
+    <div class="frame">
+      <aside class="rail">
+        <div class="brand"><span class="brand-mark">O</span><span class="brand-name">Offer Desk</span></div>
+        <nav class="nav">
+          <a href="#b" class="on">Dashboard</a>
+          <a href="#b">Pipeline</a>
+          <a href="#b">Analyzer</a>
+          <a href="#b">Comps</a>
+          <a href="#b">Settings</a>
+        </nav>
+        <div class="rail-foot">Joseph Real Estate<br>Week of Aug 31</div>
+      </aside>
+      <div class="main">
+        <div class="topbar">
+          <div><h3>Dashboard</h3><p>Week of Aug 31 · 9 offers out so far</p></div>
+          <div class="topbar-actions">
+            <button class="btn btn-ghost" type="button">Export week</button>
+            <button class="btn" type="button">Log a new deal</button>
+          </div>
+        </div>
+
+        <div class="kpis four">
+          <div class="kpi"><span class="lbl">Offers this week</span>
+            <div class="kpi-val fig">9</div><div class="kpi-foot"><span class="delta up">+1</span> vs last week</div></div>
+          <div class="kpi"><span class="lbl">Acceptance rate</span>
+            <div class="kpi-val fig">31%</div><div class="kpi-foot">4 of 13 answered</div></div>
+          <div class="kpi"><span class="lbl">Pipeline value</span>
+            <div class="kpi-val fig">$2.85M</div><div class="kpi-foot">19 offers still live</div></div>
+          <div class="kpi"><span class="lbl">Pipeline hygiene</span>
+            <div class="kpi-val fig">79%</div><div class="kpi-foot">15 of 19 have a next action</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <p class="card-title">Where the pipeline stands</p>
+            <p class="card-sub">40 deals · as of Sun Aug 31</p>
+          </div>
+          <table class="ledger">
+            <thead>
+              <tr>
+                <th>Stage</th><th>Deals</th><th>Offered</th><th>Share</th>
+                <th>Avg age</th><th>Oldest</th><th>Last 8 wks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="band"><td colspan="7">Live — your work</td></tr>
+              <tr>
+                <td>LOI Sent</td><td>12</td><td>$1,742,000</td>
+                <td><span class="share"><span class="share-track"><span class="share-fill" style="width:30%;background:#0E7A57"></span></span>30.0%</span></td>
+                <td>6d</td><td>11d</td>
+                <td><svg width="76" height="20" viewBox="0 0 76 20" aria-hidden="true"><polyline points="2,14 12,11 22,13 32,7 42,9 52,4 62,6 72,3" fill="none" stroke="#0E7A57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="72" cy="3" r="3" fill="#0E7A57" stroke="#FFFFFF" stroke-width="2"></circle></svg></td>
+              </tr>
+              <tr>
+                <td>Follow Up</td><td>7</td><td>$1,105,000</td>
+                <td><span class="share"><span class="share-track"><span class="share-fill" style="width:17.5%;background:#0E7A57"></span></span>17.5%</span></td>
+                <td class="aged">12d</td><td class="aged">16d</td>
+                <td><svg width="76" height="20" viewBox="0 0 76 20" aria-hidden="true"><polyline points="2,9 12,8 22,11 32,10 42,7 52,8 62,5 72,6" fill="none" stroke="#0E7A57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="72" cy="6" r="3" fill="#0E7A57" stroke="#FFFFFF" stroke-width="2"></circle></svg></td>
+              </tr>
+              <tr class="total">
+                <td>19 live</td><td>19</td><td>$2,847,000</td>
+                <td><span class="share">47.5%</span></td><td>8d</td><td>16d</td><td></td>
+              </tr>
+
+              <tr class="band"><td colspan="7">Answered — 13 decided</td></tr>
+              <tr>
+                <td>Offer Accepted</td><td>4</td><td>$612,000</td>
+                <td><span class="share"><span class="share-track"><span class="share-fill" style="width:10%;background:#0E7A57"></span></span>10.0%</span></td>
+                <td>4d</td><td>9d</td>
+                <td><svg width="76" height="20" viewBox="0 0 76 20" aria-hidden="true"><polyline points="2,15 12,14 22,16 32,12 42,11 52,13 62,9 72,10" fill="none" stroke="#0E7A57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="72" cy="10" r="3" fill="#0E7A57" stroke="#FFFFFF" stroke-width="2"></circle></svg></td>
+              </tr>
+              <tr>
+                <td>Offer Rejected</td><td>6</td><td>$874,000</td>
+                <td><span class="share"><span class="share-track"><span class="share-fill" style="width:15%;background:#DC2626"></span></span>15.0%</span></td>
+                <td class="muted-cell">—</td><td class="muted-cell">—</td>
+                <td><svg width="76" height="20" viewBox="0 0 76 20" aria-hidden="true"><polyline points="2,10 12,12 22,9 32,13 42,11 52,14 62,12 72,13" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="72" cy="13" r="3" fill="#DC2626" stroke="#FFFFFF" stroke-width="2"></circle></svg></td>
+              </tr>
+              <tr>
+                <td>Buyer Rejected</td><td>3</td><td>$431,000</td>
+                <td><span class="share"><span class="share-track"><span class="share-fill" style="width:7.5%;background:#64748B"></span></span>7.5%</span></td>
+                <td class="muted-cell">—</td><td class="muted-cell">—</td>
+                <td><svg width="76" height="20" viewBox="0 0 76 20" aria-hidden="true"><polyline points="2,15 12,15 22,13 32,14 42,12 52,11 62,12 72,10" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="72" cy="10" r="3" fill="#64748B" stroke="#FFFFFF" stroke-width="2"></circle></svg></td>
+              </tr>
+              <tr class="total">
+                <td>31% accepted</td><td>13</td><td>$1,917,000</td>
+                <td><span class="share">32.5%</span></td><td class="muted-cell">—</td><td class="muted-cell">—</td><td></td>
+              </tr>
+
+              <tr class="band"><td colspan="7">Closed out</td></tr>
+              <tr>
+                <td>Pass</td><td>8</td><td class="muted-cell">no offer made</td>
+                <td><span class="share"><span class="share-track"><span class="share-fill" style="width:20%;background:#CBD5E1"></span></span>20.0%</span></td>
+                <td class="muted-cell">—</td><td class="muted-cell">—</td>
+                <td><svg width="76" height="20" viewBox="0 0 76 20" aria-hidden="true"><polyline points="2,12 12,10 22,13 32,11 42,14 52,12 62,13 72,11" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="72" cy="11" r="3" fill="#94A3B8" stroke="#FFFFFF" stroke-width="2"></circle></svg></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <p class="card-title">Offers sent, last 8 weeks</p>
+            <p class="card-sub">Sun–Sat · current week still filling</p>
+          </div>
+          <svg viewBox="0 0 940 140" width="100%" height="140" role="img" aria-label="Offers sent per week: 3, 5, 4, 7, 6, 9, 8, 9">
+            <line x1="0" y1="112" x2="940" y2="112" stroke="#E2E8F0" stroke-width="1"></line>
+            <line x1="0" y1="76" x2="940" y2="76" stroke="#E2E8F0" stroke-width="1"></line>
+            <line x1="0" y1="40" x2="940" y2="40" stroke="#E2E8F0" stroke-width="1"></line>
+            <g fill="#0E7A57">
+              <rect x="46"  y="81" width="24" height="31" rx="4"></rect>
+              <rect x="163" y="61" width="24" height="51" rx="4"></rect>
+              <rect x="280" y="71" width="24" height="41" rx="4"></rect>
+              <rect x="397" y="41" width="24" height="71" rx="4"></rect>
+              <rect x="514" y="51" width="24" height="61" rx="4"></rect>
+              <rect x="631" y="20" width="24" height="92" rx="4"></rect>
+              <rect x="748" y="30" width="24" height="82" rx="4"></rect>
+              <rect x="865" y="20" width="24" height="92" rx="4"></rect>
+            </g>
+            <text x="877" y="14" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#0F172A">9</text>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#64748B" text-anchor="middle">
+              <text x="58" y="132">Jul 6</text><text x="175" y="132">Jul 13</text>
+              <text x="292" y="132">Jul 20</text><text x="409" y="132">Jul 27</text>
+              <text x="526" y="132">Aug 3</text><text x="643" y="132">Aug 10</text>
+              <text x="760" y="132">Aug 17</text><text x="877" y="132">This wk</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <dl class="dir-notes">
+    <div class="note"><dt>Answers</dt><dd>Exactly what's in each stage, what it's worth, and how stale it is.</dd></div>
+    <div class="note"><dt>Best when</dt><dd>You want the numbers themselves — for a partner, a lender, or your own weekly review.</dd></div>
+    <div class="note"><dt>Trade-off</dt><dd>Densest of the four. Nothing is emphasized, so nothing jumps out at you.</dd></div>
+  </dl>
+
+  <hr class="rule">
+
+  <!-- ================= C · TWO QUESTIONS ================= -->
+  <section class="dir">
+    <div class="dir-head">
+      <span class="dir-letter">C</span>
+      <h2>Two questions</h2>
+    </div>
+    <p class="dir-thesis">There are only two things you actually ask this screen: <em>what's
+      on my desk right now</em>, and <em>are my offers landing</em>. So the panel splits in
+      half and answers one on each side. The left half ages the live deals so the stalled
+      ones surface themselves; the right half turns win rate into a headline with the
+      trend under it. Underneath, the four deals that need a call today.</p>
+  </section>
+  <div class="scroller">
+    <div class="browser"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>offerdesk.app/dashboard</span></div>
+    <div class="frame">
+      <aside class="rail">
+        <div class="brand"><span class="brand-mark">O</span><span class="brand-name">Offer Desk</span></div>
+        <nav class="nav">
+          <a href="#c" class="on">Dashboard</a>
+          <a href="#c">Pipeline</a>
+          <a href="#c">Analyzer</a>
+          <a href="#c">Comps</a>
+          <a href="#c">Settings</a>
+        </nav>
+        <div class="rail-foot">Joseph Real Estate<br>Week of Aug 31</div>
+      </aside>
+      <div class="main">
+        <div class="topbar">
+          <div><h3>Dashboard</h3><p>Week of Aug 31 · 9 offers out so far</p></div>
+          <div class="topbar-actions">
+            <button class="btn btn-ghost" type="button">Export week</button>
+            <button class="btn" type="button">Log a new deal</button>
+          </div>
+        </div>
+
+        <div class="kpis four">
+          <div class="kpi"><span class="lbl">Offers this week</span>
+            <div class="kpi-val fig">9</div><div class="kpi-foot"><span class="delta up">+1</span> vs last week</div></div>
+          <div class="kpi"><span class="lbl">Total offers</span>
+            <div class="kpi-val fig">32</div><div class="kpi-foot">all time</div></div>
+          <div class="kpi"><span class="lbl">Pipeline value</span>
+            <div class="kpi-val fig">$2.85M</div><div class="kpi-foot">19 offers still live</div></div>
+          <div class="kpi"><span class="lbl">Avg offer to list</span>
+            <div class="kpi-val fig">71%</div><div class="kpi-foot">across 32 priced deals</div></div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <div class="card-head">
+              <p class="card-title">On the desk</p>
+              <p class="card-sub">waiting on someone else</p>
+            </div>
+            <div class="hero-wrap">
+              <span class="hero fig">19</span>
+              <span class="hero-side">deals live<br><b class="num" style="color:var(--ink)">$2,847,000</b> offered</span>
+            </div>
+            <div style="margin-top:20px">
+              <span class="lbl">How long they've been sitting</span>
+              <div class="stack" style="height:30px;margin-top:9px">
+                <div style="flex:6;background:var(--seq-1)"></div>
+                <div style="flex:5;background:var(--seq-2)"></div>
+                <div style="flex:5;background:var(--seq-3)"></div>
+                <div style="flex:3;background:var(--seq-4)"></div>
+              </div>
+              <div class="stack-key">
+                <span class="key"><i class="swatch" style="background:var(--seq-1)"></i>0–3d <b>6</b></span>
+                <span class="key"><i class="swatch" style="background:var(--seq-2)"></i>4–7d <b>5</b></span>
+                <span class="key"><i class="swatch" style="background:var(--seq-3)"></i>8–14d <b>5</b></span>
+                <span class="key"><i class="swatch" style="background:var(--seq-4)"></i>15d+ <b>3</b></span>
+              </div>
+            </div>
+            <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);display:grid;gap:10px">
+              <div class="fn-row" style="grid-template-columns:96px 1fr 34px;padding:0">
+                <span class="fn-name">LOI Sent</span>
+                <div class="fn-track" style="height:18px"><div class="fn-fill" style="width:63%"></div></div>
+                <span class="fn-count num">12</span>
+              </div>
+              <div class="fn-row" style="grid-template-columns:96px 1fr 34px;padding:0">
+                <span class="fn-name">Follow Up</span>
+                <div class="fn-track" style="height:18px"><div class="fn-fill" style="width:37%"></div></div>
+                <span class="fn-count num">7</span>
+              </div>
+            </div>
+            <p class="split-note"><span class="flag">3 stalled</span> &nbsp;no reply in 15 days — chase or kill them.</p>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <p class="card-title">How offers land</p>
+              <p class="card-sub">13 answered so far</p>
+            </div>
+            <div class="hero-wrap">
+              <span class="hero fig" style="color:var(--accent-text)">31%</span>
+              <span class="hero-side">accepted<br><span class="delta up num">+4 pts</span> vs 8 weeks ago</span>
+            </div>
+            <div style="margin-top:20px">
+              <div class="stack">
+                <div style="flex:4;background:var(--c-good)"></div>
+                <div style="flex:6;background:var(--c-bad)"></div>
+                <div style="flex:3;background:var(--c-mute)"></div>
+              </div>
+              <div class="stack-key">
+                <span class="key"><i class="swatch" style="background:var(--c-good)"></i>Accepted <b>4</b></span>
+                <span class="key"><i class="swatch" style="background:var(--c-bad)"></i>Seller said no <b>6</b></span>
+                <span class="key"><i class="swatch" style="background:var(--c-mute)"></i>Buyer passed <b>3</b></span>
+              </div>
+            </div>
+            <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
+              <span class="lbl">Acceptance rate, 8 weeks</span>
+              <svg viewBox="0 0 420 96" width="100%" height="96" style="margin-top:6px" role="img" aria-label="Acceptance rate by week: 22, 25, 20, 28, 30, 27, 33, 31 percent">
+                <line x1="0" y1="80" x2="420" y2="80" stroke="#E2E8F0" stroke-width="1"></line>
+                <line x1="0" y1="44" x2="420" y2="44" stroke="#E2E8F0" stroke-width="1"></line>
+                <line x1="0" y1="8"  x2="420" y2="8"  stroke="#E2E8F0" stroke-width="1"></line>
+                <polyline points="10,63 60,54 110,70 160,42 210,35 260,46 310,25 358,31"
+                          fill="none" stroke="#0E7A57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                <circle cx="358" cy="31" r="4.5" fill="#0E7A57" stroke="#FFFFFF" stroke-width="2"></circle>
+                <text x="372" y="35" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#0F172A">31%</text>
+              </svg>
+              <div class="bar-caption"><span>Jul 6</span><span>This week</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <p class="card-title">Needs you today</p>
+            <p class="card-sub">4 of 19 live deals</p>
+          </div>
+          <table class="queue">
+            <thead><tr><th>Property</th><th>Stage</th><th>Why</th><th class="r">Offer</th><th class="r">Silent</th></tr></thead>
+            <tbody>
+              <tr><td class="addr">4412 Bayshore Dr, Tampa</td>
+                  <td><i class="stage-dot" style="background:#B45309"></i>Follow Up</td>
+                  <td class="muted-cell">Second follow-up never sent</td>
+                  <td class="r">$184,000</td><td class="r aged">16d</td></tr>
+              <tr><td class="addr">1208 Wallace Ave, St Petersburg</td>
+                  <td><i class="stage-dot" style="background:#0E7A57"></i>LOI Sent</td>
+                  <td class="muted-cell">No reply since the LOI</td>
+                  <td class="r">$227,500</td><td class="r aged">15d</td></tr>
+              <tr><td class="addr">3305 5th Ave N, St Petersburg</td>
+                  <td><i class="stage-dot" style="background:#B45309"></i>Follow Up</td>
+                  <td class="muted-cell">Agent asked for proof of funds</td>
+                  <td class="r">$158,000</td><td class="r">9d</td></tr>
+              <tr><td class="addr">7719 Elm St, Largo</td>
+                  <td><i class="stage-dot" style="background:#0E7A57"></i>LOI Sent</td>
+                  <td class="muted-cell">No next action set</td>
+                  <td class="r">$203,000</td><td class="r">4d</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <dl class="dir-notes">
+    <div class="note"><dt>Answers</dt><dd>Who do I chase this morning, and is my pricing working?</dd></div>
+    <div class="note"><dt>Best when</dt><dd>The dashboard is the first screen of your day and you want to act from it.</dd></div>
+    <div class="note"><dt>Trade-off</dt><dd>Rolls the three dead stages into one bar — you lose per-stage detail.</dd></div>
+  </dl>
+
+  <hr class="rule">
+
+  <!-- ================= D · COMMAND DECK ================= -->
+  <section class="dir">
+    <div class="dir-head">
+      <span class="dir-letter">D</span>
+      <h2>Command deck</h2>
+    </div>
+    <p class="dir-thesis">Everything on one screen, nothing below the fold. Six compact
+      KPIs with their own trend lines across the top, then a three-column deck: funnel,
+      ledger and the call list side by side. This is the densest use of a laptop screen —
+      it assumes you'd rather scan than scroll.</p>
+  </section>
+  <div class="scroller">
+    <div class="browser"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>offerdesk.app/dashboard</span></div>
+    <div class="frame">
+      <aside class="rail">
+        <div class="brand"><span class="brand-mark">O</span><span class="brand-name">Offer Desk</span></div>
+        <nav class="nav">
+          <a href="#d" class="on">Dashboard</a>
+          <a href="#d">Pipeline</a>
+          <a href="#d">Analyzer</a>
+          <a href="#d">Comps</a>
+          <a href="#d">Settings</a>
+        </nav>
+        <div class="rail-foot">Joseph Real Estate<br>Week of Aug 31</div>
+      </aside>
+      <div class="main">
+        <div class="topbar">
+          <div><h3>Dashboard</h3><p>Week of Aug 31 · 9 offers out · 3 deals stalled</p></div>
+          <div class="topbar-actions">
+            <button class="btn btn-ghost" type="button">Export week</button>
+            <button class="btn" type="button">Log a new deal</button>
+          </div>
+        </div>
+
+        <div class="kpis six">
+          <div class="kpi"><span class="lbl">Offers / wk</span><div class="kpi-val fig">9</div>
+            <div class="kpi-foot"><svg width="52" height="16" viewBox="0 0 52 16" aria-hidden="true"><polyline points="2,12 9,9 16,11 23,6 30,7 37,3 44,5 50,2" fill="none" stroke="#0E7A57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span class="delta up">+1</span></div></div>
+          <div class="kpi"><span class="lbl">Accepted</span><div class="kpi-val fig">31%</div>
+            <div class="kpi-foot"><svg width="52" height="16" viewBox="0 0 52 16" aria-hidden="true"><polyline points="2,10 9,8 16,12 23,6 30,5 37,7 44,3 50,4" fill="none" stroke="#0E7A57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span class="delta up">+4</span></div></div>
+          <div class="kpi"><span class="lbl">Pipeline</span><div class="kpi-val fig">$2.85M</div>
+            <div class="kpi-foot">19 live</div></div>
+          <div class="kpi"><span class="lbl">Offer / list</span><div class="kpi-val fig">71%</div>
+            <div class="kpi-foot"><svg width="52" height="16" viewBox="0 0 52 16" aria-hidden="true"><polyline points="2,6 9,7 16,5 23,8 30,7 37,9 44,8 50,9" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg><span class="delta down">−2</span></div></div>
+          <div class="kpi"><span class="lbl">Hygiene</span><div class="kpi-val fig">79%</div>
+            <div class="kpi-foot">15 of 19 set</div></div>
+          <div class="kpi"><span class="lbl">Stalled</span><div class="kpi-val fig" style="color:var(--warn)">3</div>
+            <div class="kpi-foot">15d+ no reply</div></div>
+        </div>
+
+        <div class="grid-32">
+          <div class="card">
+            <div class="card-head">
+              <p class="card-title">Where the pipeline stands</p>
+              <p class="card-sub">40 deals · conversion at each step</p>
+            </div>
+            <div class="funnel">
+              <div class="fn-row" style="grid-template-columns:112px 1fr 48px 84px;padding:7px 0">
+                <span class="fn-name">Logged</span>
+                <div class="fn-track" style="height:22px"><div class="fn-fill" style="width:100%"></div></div>
+                <span class="fn-count num fig" style="font-size:15px">40</span>
+                <span class="fn-money num">$5.92M</span>
+              </div>
+              <div class="fn-drop" style="grid-template-columns:112px 1fr"><span>▼ 8</span><span>passed before an offer</span></div>
+              <div class="fn-row" style="grid-template-columns:112px 1fr 48px 84px;padding:7px 0">
+                <span class="fn-name">Offer sent</span>
+                <div class="fn-track" style="height:22px"><div class="fn-fill" style="width:80%"></div></div>
+                <span class="fn-count num fig" style="font-size:15px">32</span>
+                <span class="fn-money num">$4.68M</span>
+              </div>
+              <div class="fn-drop" style="grid-template-columns:112px 1fr"><span>▼ 19</span><span>still waiting on a reply</span></div>
+              <div class="fn-row" style="grid-template-columns:112px 1fr 48px 84px;padding:7px 0">
+                <span class="fn-name">Answered</span>
+                <div class="fn-track" style="height:22px"><div class="fn-fill" style="width:32.5%"></div></div>
+                <span class="fn-count num fig" style="font-size:15px">13</span>
+                <span class="fn-money num">$1.84M</span>
+              </div>
+              <div class="fn-drop" style="grid-template-columns:112px 1fr"><span>▼ 9</span><span>6 seller no · 3 buyer passed</span></div>
+              <div class="fn-row" style="grid-template-columns:112px 1fr 48px 84px;padding:7px 0">
+                <span class="fn-name">Accepted</span>
+                <div class="fn-track" style="height:22px"><div class="fn-fill" style="width:10%"></div></div>
+                <span class="fn-count num fig" style="font-size:15px">4</span>
+                <span class="fn-money num">$612K</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap">
+              <span class="conv">80%</span><span class="conv">41%</span><span class="conv">31%</span>
+              <span class="conv" style="background:var(--accent-muted);color:var(--accent-text)">offer → close&nbsp; 12.5%</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <p class="card-title">Needs you today</p>
+              <p class="card-sub">4 deals</p>
+            </div>
+            <table class="queue">
+              <tbody>
+                <tr><td class="addr">4412 Bayshore Dr<br><span class="muted-cell" style="font-weight:400;font-size:11.5px">Follow Up · no 2nd touch</span></td><td class="r aged">16d</td></tr>
+                <tr><td class="addr">1208 Wallace Ave<br><span class="muted-cell" style="font-weight:400;font-size:11.5px">LOI Sent · no reply</span></td><td class="r aged">15d</td></tr>
+                <tr><td class="addr">3305 5th Ave N<br><span class="muted-cell" style="font-weight:400;font-size:11.5px">Follow Up · wants POF</span></td><td class="r">9d</td></tr>
+                <tr><td class="addr">7719 Elm St<br><span class="muted-cell" style="font-weight:400;font-size:11.5px">LOI Sent · no next action</span></td><td class="r">4d</td></tr>
+              </tbody>
+            </table>
+            <button class="btn btn-ghost" style="width:100%;margin-top:14px" type="button">Open pipeline</button>
+          </div>
+        </div>
+
+        <div class="grid-32">
+          <div class="card">
+            <div class="card-head"><p class="card-title">Stage detail</p></div>
+            <table class="ledger">
+              <thead><tr><th>Stage</th><th>Deals</th><th>Offered</th><th>Share</th><th>Oldest</th></tr></thead>
+              <tbody>
+                <tr><td>LOI Sent</td><td>12</td><td>$1,742,000</td>
+                  <td><span class="share"><span class="share-track" style="width:56px"><span class="share-fill" style="width:30%;background:#0E7A57"></span></span>30.0%</span></td><td>11d</td></tr>
+                <tr><td>Follow Up</td><td>7</td><td>$1,105,000</td>
+                  <td><span class="share"><span class="share-track" style="width:56px"><span class="share-fill" style="width:17.5%;background:#0E7A57"></span></span>17.5%</span></td><td class="aged">16d</td></tr>
+                <tr><td>Offer Accepted</td><td>4</td><td>$612,000</td>
+                  <td><span class="share"><span class="share-track" style="width:56px"><span class="share-fill" style="width:10%;background:#0E7A57"></span></span>10.0%</span></td><td>9d</td></tr>
+                <tr><td>Offer Rejected</td><td>6</td><td>$874,000</td>
+                  <td><span class="share"><span class="share-track" style="width:56px"><span class="share-fill" style="width:15%;background:#DC2626"></span></span>15.0%</span></td><td class="muted-cell">—</td></tr>
+                <tr><td>Buyer Rejected</td><td>3</td><td>$431,000</td>
+                  <td><span class="share"><span class="share-track" style="width:56px"><span class="share-fill" style="width:7.5%;background:#64748B"></span></span>7.5%</span></td><td class="muted-cell">—</td></tr>
+                <tr><td>Pass</td><td>8</td><td class="muted-cell">—</td>
+                  <td><span class="share"><span class="share-track" style="width:56px"><span class="share-fill" style="width:20%;background:#CBD5E1"></span></span>20.0%</span></td><td class="muted-cell">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><p class="card-title">Offers sent, 8 weeks</p></div>
+            <svg viewBox="0 0 360 134" width="100%" height="134" role="img" aria-label="Offers sent per week: 3, 5, 4, 7, 6, 9, 8, 9">
+              <line x1="0" y1="106" x2="360" y2="106" stroke="#E2E8F0" stroke-width="1"></line>
+              <line x1="0" y1="72" x2="360" y2="72" stroke="#E2E8F0" stroke-width="1"></line>
+              <line x1="0" y1="38" x2="360" y2="38" stroke="#E2E8F0" stroke-width="1"></line>
+              <g fill="#0E7A57">
+                <rect x="8"   y="78" width="22" height="28" rx="4"></rect>
+                <rect x="52"  y="59" width="22" height="47" rx="4"></rect>
+                <rect x="96"  y="69" width="22" height="37" rx="4"></rect>
+                <rect x="140" y="41" width="22" height="65" rx="4"></rect>
+                <rect x="184" y="50" width="22" height="56" rx="4"></rect>
+                <rect x="228" y="22" width="22" height="84" rx="4"></rect>
+                <rect x="272" y="31" width="22" height="75" rx="4"></rect>
+                <rect x="316" y="22" width="22" height="84" rx="4"></rect>
+              </g>
+              <text x="327" y="16" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="#0F172A">9</text>
+              <g font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#64748B" text-anchor="middle">
+                <text x="19" y="126">Jul 6</text><text x="151" y="126">Jul 27</text><text x="327" y="126">This wk</text>
+              </g>
+            </svg>
+            <p class="split-note" style="margin-top:10px">Best 8-week stretch yet. The
+              North Star metric is offers out, and it's climbing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <dl class="dir-notes">
+    <div class="note"><dt>Answers</dt><dd>Everything, at once, without scrolling.</dd></div>
+    <div class="note"><dt>Best when</dt><dd>You live on a big screen and want the whole operation in one view.</dd></div>
+    <div class="note"><dt>Trade-off</dt><dd>Most work to build, and it degrades hardest on a phone — needs a separate mobile layout.</dd></div>
+  </dl>
+
+  <hr class="rule">
+
+  <div class="lede">
+    <p class="kicker">What happens next</p>
+    <p>Tell me a letter and I'll build it against the real data — the pipeline panel,
+      the desktop shell around it, and a phone layout that collapses cleanly. Mixing is
+      fine too: <strong>B's ledger inside C's split</strong> is a real option, and so is
+      A's funnel with C's call list under it.</p>
+  </div>
+</div>

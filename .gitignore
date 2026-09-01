@@ -54,3 +54,7 @@ dist-check/
 # published artifact is the shared copy.
 design/*.html
 !design/*.dc.html
+# ...but a hand-authored direction page is source, not seeded output.
+# Listed one by one: `design/analyzer-directions.html` really is a 2.5 MB
+# seeded payload, so a `*-directions.html` pattern would drag it in.
+!design/pipeline-directions.html
