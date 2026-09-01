@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    a { color: #0E7A57; } a:hover { color: #0B6046; }
+    .num { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #F8FAFC; color: #0F172A; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="height: 56px; border-bottom: 1px solid #E2E8F0; background: #FFFFFF; display: flex; align-items: center; padding: 0 24px; gap: 20px;">
+    <div style="font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 16px; color: #0E7A57;">Offer Desk</div>
+    <div style="display: flex; gap: 4px;">
+      <div style="padding: 7px 13px; border-radius: 8px; font-size: 13px; color: #475569;">Dashboard</div>
+      <div style="padding: 7px 13px; border-radius: 8px; font-size: 13px; color: #475569;">Pipeline</div>
+      <div style="padding: 7px 13px; border-radius: 8px; background: #ECFDF5; font-size: 13px; font-weight: 600; color: #0B6046;">Analyzer</div>
+    </div>
+    <div style="flex: 1;"></div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="font-size: 13px; color: #475569;">4218 SW 12th Pl, Cape Coral</div>
+      <div style="width: 1px; height: 18px; background: #E2E8F0;"></div>
+      <div style="display: flex; align-items: center; gap: 6px; background: #DBEAFE; padding: 5px 11px; border-radius: 999px;">
+        <div style="width: 6px; height: 6px; border-radius: 999px; background: #2563EB;"></div>
+        <span style="font-size: 12px; font-weight: 500; color: #2563EB;">LOI Sent</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: flex; overflow: hidden;">
+
+    <div style="flex: 1; padding: 24px 28px; display: flex; flex-direction: column; gap: 18px; overflow: hidden;">
+
+      <div style="display: flex; gap: 4px; background: #E2E8F0; padding: 4px; border-radius: 10px; align-self: flex-start;">
+        <div style="padding: 8px 16px; border-radius: 7px; font-size: 13px; color: #475569;">Wholesale</div>
+        <div style="padding: 8px 16px; border-radius: 7px; background: #FFFFFF; font-size: 13px; font-weight: 600; color: #0F172A; box-shadow: 0 1px 2px rgba(15,23,42,0.06);">Fix &amp; Flip</div>
+        <div style="padding: 8px 16px; border-radius: 7px; font-size: 13px; color: #475569;">BRRRR</div>
+        <div style="padding: 8px 16px; border-radius: 7px; font-size: 13px; color: #475569;">Turnkey</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;">
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px 18px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 12px; color: #475569;">ARV</span>
+            <div style="display: flex; align-items: center; gap: 5px; background: #ECFDF5; padding: 4px 9px; border-radius: 999px;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0E7A57" stroke-width="2.2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <span style="font-size: 11px; font-weight: 500; color: #0B6046;">4 comps</span>
+            </div>
+          </div>
+          <div class="num" style="font-size: 26px; font-weight: 600; margin-top: 8px;">$357,244</div>
+          <div style="font-size: 11px; color: #94A3B8; margin-top: 5px;">$193.10 / sqft average</div>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px 18px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 12px; color: #475569;">Rehab</span>
+            <span style="font-size: 11px; color: #94A3B8;">$13.51 / sqft</span>
+          </div>
+          <div class="num" style="font-size: 26px; font-weight: 600; margin-top: 8px;">$25,000</div>
+          <div style="position: relative; height: 4px; background: #E2E8F0; border-radius: 999px; margin-top: 11px;">
+            <div style="position: absolute; left: 0; top: 0; height: 4px; width: 34%; background: #0E7A57; border-radius: 999px;"></div>
+            <div style="position: absolute; left: 34%; top: 50%; transform: translate(-50%, -50%); width: 18px; height: 18px; border-radius: 999px; background: #FFFFFF; border: 2px solid #0E7A57;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px 18px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
+          <span style="font-size: 12px; font-weight: 600;">Buyer MAO percentage</span>
+          <span style="font-size: 11px; color: #94A3B8;">What a cash buyer pays against ARV</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px;">
+          <div class="num" style="height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 10px; background: #F8FAFC; color: #475569; border: 1px solid #E2E8F0;">50%</div>
+          <div class="num" style="height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 10px; background: #F8FAFC; color: #475569; border: 1px solid #E2E8F0;">55%</div>
+          <div class="num" style="height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 10px; background: #F8FAFC; color: #475569; border: 1px solid #E2E8F0;">60%</div>
+          <div class="num" style="height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 10px; background: #F8FAFC; color: #475569; border: 1px solid #E2E8F0;">65%</div>
+          <div class="num" style="height: 44px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; border-radius: 10px; background: #0E7A57; color: #FFFFFF; border: 1px solid #0E7A57;">70%</div>
+          <div class="num" style="height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 10px; background: #F8FAFC; color: #475569; border: 1px solid #E2E8F0;">75%</div>
+          <div class="num" style="height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 10px; background: #F8FAFC; color: #475569; border: 1px solid #E2E8F0;">80%</div>
+          <div class="num" style="height: 44px; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 10px; background: #F8FAFC; color: #475569; border: 1px solid #E2E8F0;">85%</div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px 18px; flex: 1; display: flex; flex-direction: column; gap: 12px; overflow: hidden;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 12px; font-weight: 600;">Financing, holding and transaction</span>
+          <span style="font-size: 11px; color: #94A3B8;">1 loan &middot; interest only &middot; 6 months</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;">
+          <div><div style="font-size: 11px; color: #64748B;">Down</div><div class="num" style="font-size: 15px; font-weight: 500; margin-top: 3px;">25%</div></div>
+          <div><div style="font-size: 11px; color: #64748B;">Rate</div><div class="num" style="font-size: 15px; font-weight: 500; margin-top: 3px;">12.5%</div></div>
+          <div><div style="font-size: 11px; color: #64748B;">Holding</div><div class="num" style="font-size: 15px; font-weight: 500; margin-top: 3px;">$687/mo</div></div>
+          <div><div style="font-size: 11px; color: #64748B;">Agent</div><div class="num" style="font-size: 15px; font-weight: 500; margin-top: 3px;">6%</div></div>
+        </div>
+        <div style="height: 1px; background: #F1F5F9;"></div>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;">
+          <div><div style="font-size: 11px; color: #64748B;">Interest</div><div class="num" style="font-size: 15px; font-weight: 500; margin-top: 3px;">$11,132</div></div>
+          <div><div style="font-size: 11px; color: #64748B;">Holding total</div><div class="num" style="font-size: 15px; font-weight: 500; margin-top: 3px;">$4,122</div></div>
+          <div><div style="font-size: 11px; color: #64748B;">Transaction</div><div class="num" style="font-size: 15px; font-weight: 500; margin-top: 3px;">$29,507</div></div>
+          <div><div style="font-size: 11px; color: #64748B;">Project cost</div><div class="num" style="font-size: 15px; font-weight: 500; margin-top: 3px;">$307,244</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="width: 400px; border-left: 1px solid #E2E8F0; background: #FFFFFF; padding: 28px 28px 24px; display: flex; flex-direction: column;">
+
+      <div style="font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; color: #64748B;">Max offer</div>
+      <div style="font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 48px; letter-spacing: -2px; line-height: 1.05; margin-top: 8px;">$237,483</div>
+
+      <div style="display: flex; align-items: center; gap: 8px; margin-top: 14px;">
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: #FEF3C7; padding: 5px 11px; border-radius: 999px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2.4" stroke-linecap="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+          <span style="font-size: 12px; font-weight: 600; color: #B45309;">Thin</span>
+        </div>
+        <span style="font-size: 12px; color: #64748B;">under your 15% floor</span>
+      </div>
+
+      <div style="height: 1px; background: #E2E8F0; margin: 22px 0;"></div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <span style="font-size: 13px; color: #475569;">Profit</span>
+          <span class="num" style="font-size: 17px; font-weight: 600; color: #0B6046;">$50,000</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <span style="font-size: 13px; color: #475569;">Margin</span>
+          <span class="num" style="font-size: 17px; font-weight: 600;">14.0%</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <span style="font-size: 13px; color: #475569;">Cash on cash</span>
+          <span class="num" style="font-size: 17px; font-weight: 600;">49%</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <span style="font-size: 13px; color: #475569;">Cash needed</span>
+          <span class="num" style="font-size: 17px; font-weight: 600;">$102,125</span>
+        </div>
+      </div>
+
+      <div style="height: 1px; background: #E2E8F0; margin: 22px 0;"></div>
+
+      <div style="font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; color: #64748B; margin-bottom: 12px;">At other percentages</div>
+      <div style="display: flex; flex-direction: column; gap: 9px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="num" style="font-size: 13px; color: #64748B;">65%</span>
+          <span class="num" style="font-size: 13px; color: #475569;">$209,795</span>
+          <span class="num" style="font-size: 12px; color: #0B6046;">21.7%</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="num" style="font-size: 13px; color: #64748B;">75%</span>
+          <span class="num" style="font-size: 13px; color: #475569;">$265,171</span>
+          <span class="num" style="font-size: 12px; color: #B45309;">6.3%</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="num" style="font-size: 13px; color: #64748B;">80%</span>
+          <span class="num" style="font-size: 13px; color: #475569;">$292,859</span>
+          <span class="num" style="font-size: 12px; color: #DC2626;">-1.4%</span>
+        </div>
+      </div>
+
+      <div style="flex: 1;"></div>
+
+      <div style="display: flex; flex-direction: column; gap: 9px;">
+        <div style="height: 46px; border-radius: 10px; background: #0E7A57; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; font-weight: 600; color: #FFFFFF;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          Generate LOI at $237,483
+        </div>
+        <div style="height: 46px; border-radius: 10px; border: 1px solid #CBD5E1; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; color: #334155;">Save analysis</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

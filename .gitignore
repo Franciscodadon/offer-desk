@@ -49,3 +49,8 @@ example
 
 # Web export output from `npx expo export`
 dist-check/
+
+# Seeded design canvas output. Regenerated from design/*.dc.html; the
+# published artifact is the shared copy.
+design/*.html
+!design/*.dc.html

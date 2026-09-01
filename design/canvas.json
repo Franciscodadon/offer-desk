@@ -1,0 +1,16 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "D. Desk (desktop split)" },
+    { "file": "Ledger.dc.html", "x": 1560, "y": 0, "w": 390, "h": 844, "title": "A. Ledger" },
+    { "file": "Decision.dc.html", "x": 2030, "y": 0, "w": 390, "h": 844, "title": "B. Decision" },
+    { "file": "Scenarios.dc.html", "x": 2500, "y": 0, "w": 390, "h": 844, "title": "C. Offer ladder" }
+  ],
+  "annotations": [
+    { "id": "brief", "x": 0, "y": -190, "w": 620, "text": "Analyzer directions - Offer Desk\n\nFour axes, not four shades of one idea. Every number is the real PRD 7.6 acceptance case (ARV 357,244, rehab 25,000) so the layouts are judged on real figures.\n\nAll four carry: MAO presets 50-85 in 5s, ARV filled from comps in one tap, live Max Offer as the hero, verdict grading." },
+    { "id": "note-a", "x": 1560, "y": -190, "w": 390, "text": "A. LEDGER - dark underwriting sheet\n\nEverything on one screen, no scrolling. Reads like a terminal: mono figures, hairline rules, where every dollar goes.\n\nTradeoff: densest of the four. Great once you know the model, more to take in on day one." },
+    { "id": "note-b", "x": 2030, "y": -190, "w": 390, "text": "B. DECISION - the number first\n\nThe answer dominates; inputs are two tactile cards below. Calmest and fastest to read in a driveway.\n\nTradeoff: the cost breakdown moves behind a tap, so it is less of an audit surface." },
+    { "id": "note-c", "x": 2500, "y": -190, "w": 390, "text": "C. OFFER LADDER - the comparison IS the screen\n\nEvery MAO percentage priced at once, so you see where margin dies rather than clicking to find out.\n\nTradeoff: one strategy at a time, and it answers 'what should I offer' better than 'why'." },
+    { "id": "note-d", "x": 0, "y": 940, "w": 620, "text": "D. DESK - desktop split\n\nInputs left, a result rail pinned right that never scrolls away, with nearby percentages underneath. This is the web surface for reconciling at night; A, B or C is what the phone runs." }
+  ],
+  "launch": { "view": "canvas" }
+}
