@@ -44,6 +44,9 @@ development; sharing a pipeline across devices needs Option B.
 
 ### Option B: a hosted project, for real use across devices
 
+Step-by-step instructions, including the gotchas, are in
+[`docs/connect-supabase.md`](docs/connect-supabase.md). The short version:
+
 The PRD's whole premise is a phone in the field and the web at the desk sharing
 one pipeline, and that needs a database both can reach.
 

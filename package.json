@@ -66,7 +66,8 @@
     "db:status": "supabase status",
     "db:reset": "supabase db reset",
     "db:push": "supabase db push",
-    "test:integration": "jest --testMatch \"**/*.integration.test.ts\""
+    "test:integration": "jest --testMatch \"**/*.integration.test.ts\"",
+    "db:bundle": "./scripts/bundle-schema.sh"
   },
   "private": true
 }

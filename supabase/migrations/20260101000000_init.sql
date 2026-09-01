@@ -3,6 +3,12 @@
 -- updated_at timestamps, and deleted_at for soft delete. Built multi-tenant
 -- from day one even while a single org is in practice (PRD principle 6).
 
+-- Hosted Supabase installs extensions into the `extensions` schema, while a
+-- plain Postgres puts them in `public`. Naming both here lets an operator class
+-- like gin_trgm_ops resolve either way; a schema that does not exist is simply
+-- ignored, so the same line is correct in both places.
+set search_path = public, extensions;
+
 create extension if not exists "pgcrypto";
 -- Backs trigram address search on deals.
 create extension if not exists "pg_trgm";
