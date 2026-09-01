@@ -252,6 +252,11 @@ export default function DealDetailScreen() {
       ) : null}
 
       <Button
+        label="Generate LOI"
+        onPress={() => router.push(`/deal/${deal.id}/loi`)}
+      />
+      <Button
+        variant="secondary"
         label={`Analyze${deal.analyses.length > 0 ? ` (${deal.analyses.length} saved)` : ''}`}
         onPress={() => router.push(`/deal/${deal.id}/analyzer`)}
       />

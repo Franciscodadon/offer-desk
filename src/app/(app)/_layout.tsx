@@ -45,6 +45,7 @@ export default function AppLayout() {
       <Tabs.Screen name="deal/[id]/index" options={{ href: null }} />
       <Tabs.Screen name="deal/[id]/comps" options={{ href: null }} />
       <Tabs.Screen name="deal/[id]/analyzer" options={{ href: null }} />
+      <Tabs.Screen name="deal/[id]/loi" options={{ href: null }} />
     </Tabs>
   );
 }
