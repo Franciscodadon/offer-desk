@@ -14,11 +14,12 @@ guidance written for SDK 50) will be wrong.
 | `src/app/` | Expo Router routes. `(auth)` is signed out, `(app)` is signed in. |
 | `src/components/ui/` | Shared primitives. Screens compose these, not raw `View`/`Text`. |
 | `src/theme/` | Design tokens, light/dark themes, fonts. The only place colors are defined. |
-| `src/domain/` | Deal statuses and record types. No React, no I/O. |
+| `src/domain/` | Deal statuses, record types, comps math, and the analyzer. No React, no I/O. |
 | `src/lib/` | Supabase client, env, offline query cache, formatting. |
-| `src/features/` | Feature modules (`auth`, `import`). |
+| `src/features/` | Feature modules (`auth`, `deals`, `comps`, `analyzer`, `import`). |
 | `supabase/migrations/` | Schema and RLS. Applied in filename order; never edit an applied migration. |
 | `supabase/tests/` | RLS isolation tests plus the local Postgres shim they run against. |
+| `src/test/` | Shared render helper for component tests. |
 
 ## House rules
 
@@ -34,9 +35,13 @@ guidance written for SDK 50) will be wrong.
 4. **Secrets never enter `src/`.** Only `EXPO_PUBLIC_*` values reach the client
    bundle. OAuth client secrets, the service-role key, and data-provider keys
    belong in Edge Function secrets.
-5. **The deal math in PRD Appendix D is a specification.** When the analyzer
-   lands, it must reproduce the section 7.6 acceptance case to the dollar. Write
-   that test first.
+5. **The deal math in PRD Appendix D is a specification.** The section 7.6
+   acceptance case is a test and it passes to the dollar. Never change
+   `src/domain/analyzer` without running it, and never adjust the expected
+   figures to make a change pass.
+6. **Rates are ratios, everywhere.** 12.5% is `0.125` in every model and every
+   stored row. The conversion happens once, in `PercentInput`. Dividing by 100
+   anywhere else means something is already wrong.
 
 ## Before you push
 

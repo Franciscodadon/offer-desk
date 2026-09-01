@@ -8,10 +8,10 @@ shareable pitch — from the field or the desk. One codebase, three platforms
 Built for the Joseph Real Estate / Deo Volente acquisitions team, architected to
 become a paid product for other investors.
 
-**Status: phase 0 (foundations) complete.** The app runs on all three platforms,
-signs users in, and enforces per-workspace data isolation in the database. The
-acquisition features — pipeline, LOI generator, analyzer, comps, pitch — are
-phase 1.
+**Status: phase 1 in progress.** Foundations are complete and the pipeline,
+comps, and multi-strategy analyzer are built. Still to come in phase 1: the LOI
+generator, sending an LOI with proof of funds, the deal pitch, and live
+dashboard KPIs.
 
 ## Quick start
 
@@ -42,23 +42,34 @@ missing. To connect one:
 
 Sign up, and the database creates your workspace automatically.
 
-## What phase 0 delivers
+## What is built
 
 | Area | What is in place |
 | --- | --- |
 | App shell | Expo SDK 57 + Expo Router, running on iOS, Android, and web from one codebase |
 | Design system | Emerald-on-slate tokens, Archivo / IBM Plex Sans / IBM Plex Mono, full light and dark themes, tabular numerals for money |
-| UI primitives | `Text`, `Button`, `Card`, `TextField`, `Screen`, `StatusPill` — 44pt tap targets, WCAG-AA contrast |
+| UI primitives | `Text`, `Button`, `Card`, `TextField`, `Screen`, `StatusPill`, `Chip`, `EmptyState` - 44pt tap targets, WCAG-AA contrast |
 | Auth | Email + password sign-up and sign-in, session persisted in the device keychain, restored on cold start |
 | Workspaces | Signing up creates an org, makes you its owner, and seeds a subscription row |
 | Data model | All 13 tables from PRD section 9, with indexes, soft deletes, and `updated_at` triggers |
 | Security | Row-Level Security on every table, private storage buckets, OAuth token columns unreachable from any client |
-| Offline | TanStack Query with on-device persistence; cached reads work with no connection |
+| Offline | TanStack Query with on-device persistence; cached reads and local search work with no connection |
+| Pipeline (7.2) | List, search by address or agent, status filters with counts, four sort orders, inline status change, offer-to-list on every row |
+| Capture (7.3) | One form for the deal, its property facts, and its listing agent; tap-to-call and tap-to-email the agent |
+| Analyzer (7.6) | Wholesale, Fix & Flip, BRRRR, and Turnkey. The flip model carries multiple loans, interest-only or amortized, holding and transaction costs, and solves Max Offer exactly |
+| Comps (7.7) | Comp rows with per-comp $/sqft, averages, and an ARV suggestion with an upside note |
 | Migration path | Prototype JSON export maps onto `deals` + `properties` + `comps` + `analyses`, reporting every row it cannot map |
 
-Not yet built (phase 1): deal capture, LOI generation, mailbox connection and
-sending, the multi-strategy analyzer, comps, the pitch generator, and live
-dashboard KPIs. See `docs/phase-0.md` for the handoff notes.
+Not yet built: the LOI generator (7.4), mailbox connection and sending (7.5),
+the deal pitch (7.8), and live dashboard KPIs (7.9). See `docs/phase-0.md` for
+the foundations handoff and the section 7.5 scope decision.
+
+### The deal math is a specification
+
+PRD 7.6 states the analyzer must reproduce appendix D to the dollar, and gives
+an acceptance case. That case is a test (`src/domain/analyzer/__tests__/`), it
+passes on every figure the PRD states, and a second test drives the same case
+through the real UI so a units bug in a percent field cannot quietly break it.
 
 ## Commands
 

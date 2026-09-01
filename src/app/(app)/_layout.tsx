@@ -42,7 +42,9 @@ export default function AppLayout() {
       {/* Reached from the pipeline, not from the tab bar. `href: null` keeps
           these routes navigable while hiding them as tabs. */}
       <Tabs.Screen name="deal/new" options={{ href: null }} />
-      <Tabs.Screen name="deal/[id]" options={{ href: null }} />
+      <Tabs.Screen name="deal/[id]/index" options={{ href: null }} />
+      <Tabs.Screen name="deal/[id]/comps" options={{ href: null }} />
+      <Tabs.Screen name="deal/[id]/analyzer" options={{ href: null }} />
     </Tabs>
   );
 }

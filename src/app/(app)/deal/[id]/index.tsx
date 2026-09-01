@@ -251,7 +251,16 @@ export default function DealDetailScreen() {
         </Card>
       ) : null}
 
-      <Button label="Edit deal" onPress={() => setEditing(true)} />
+      <Button
+        label={`Analyze${deal.analyses.length > 0 ? ` (${deal.analyses.length} saved)` : ''}`}
+        onPress={() => router.push(`/deal/${deal.id}/analyzer`)}
+      />
+      <Button
+        label={`Comps${deal.comps.length > 0 ? ` (${deal.comps.length})` : ''}`}
+        variant="secondary"
+        onPress={() => router.push(`/deal/${deal.id}/comps`)}
+      />
+      <Button label="Edit deal" variant="secondary" onPress={() => setEditing(true)} />
       <Button label="Back to pipeline" variant="ghost" onPress={() => router.replace('/pipeline')} />
       <Button label="Delete deal" variant="ghost" onPress={confirmDelete} />
     </Screen>
