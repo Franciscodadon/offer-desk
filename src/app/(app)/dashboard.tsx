@@ -37,10 +37,19 @@ export default function DashboardScreen() {
         }
       >
         <View style={styles.header}>
-          <Text variant="title">Dashboard</Text>
-          <Text variant="body" tone="muted">
-            This week at a glance.
-          </Text>
+          <View style={styles.headerText}>
+            <Text variant="title">Dashboard</Text>
+            <Text variant="body" tone="muted">
+              This week at a glance.
+            </Text>
+          </View>
+          {/* The action the whole product exists for, reachable from the first
+              screen without a detour through the pipeline. */}
+          <Button
+            label="Log a new deal"
+            fullWidth={false}
+            onPress={() => router.push('/deal/new')}
+          />
         </View>
         {!hasDeals && !deals.isLoading ? (
           <EmptyState
@@ -151,7 +160,14 @@ function StatTile({
 }
 const styles = StyleSheet.create({
   content: { gap: spacing.lg, paddingBottom: spacing.xl },
-  header: { gap: spacing.xs },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: spacing.md,
+    flexWrap: 'wrap',
+  },
+  headerText: { gap: spacing.xs, flexShrink: 1 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md },
   tile: { flexGrow: 1, flexBasis: 150, gap: spacing.xs },
   statusRow: {

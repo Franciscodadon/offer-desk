@@ -42,8 +42,10 @@ export default function AppLayout() {
         },
       }}
     >
-      <Tabs.Screen name="pipeline" options={{ title: 'Pipeline' }} />
+      {/* Dashboard leads: the first question on opening the app is "where do
+          we stand", and the pipeline is one tap from the answer. */}
       <Tabs.Screen name="dashboard" options={{ title: 'Dashboard' }} />
+      <Tabs.Screen name="pipeline" options={{ title: 'Pipeline' }} />
       <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
       {/* Reached from the pipeline, not from the tab bar. `href: null` keeps
           these routes navigable while hiding them as tabs. */}

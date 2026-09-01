@@ -12,5 +12,5 @@ export default function Index() {
   const { isSignedIn } = useAuth();
 
   if (!isSupabaseConfigured) return <Redirect href="/setup" />;
-  return <Redirect href={isSignedIn ? '/pipeline' : '/sign-in'} />;
+  return <Redirect href={isSignedIn ? '/dashboard' : '/sign-in'} />;
 }

@@ -13,6 +13,9 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Button, Card, Chip, Text, TextField } from '@/components/ui';
+import type { ParsedListing } from '@/features/import/listingParser';
+
+import { ListingImport } from './ListingImport';
 import { DEAL_STATUSES, DEAL_STATUS_LABELS, statusColors, type DealStatus } from '@/domain/status';
 import type { Contact, Deal, Property } from '@/domain/types';
 import { parseNumericInput, toDateOnly } from '@/lib/format';
@@ -210,6 +213,34 @@ export function toPayload(values: DealFormValues): DealFormPayload {
   };
 }
 
+/** Fills the form from a parsed listing, leaving anything it did not find. */
+export function applyListing(
+  values: DealFormValues,
+  listing: ParsedListing,
+  url: string,
+): DealFormValues {
+  const keep = (current: string, incoming: string | number | null): string =>
+    incoming == null || incoming === '' ? current : String(incoming);
+
+  return {
+    ...values,
+    address: keep(values.address, listing.address),
+    city: keep(values.city, listing.city),
+    state: keep(values.state, listing.state),
+    zip: keep(values.zip, listing.zip),
+    mls: keep(values.mls, listing.mls),
+    listPrice: keep(values.listPrice, listing.listPrice),
+    beds: keep(values.beds, listing.beds),
+    baths: keep(values.baths, listing.baths),
+    sqft: keep(values.sqft, listing.sqft),
+    yearBuilt: keep(values.yearBuilt, listing.yearBuilt),
+    agentName: keep(values.agentName, listing.agentName),
+    agentPhone: keep(values.agentPhone, listing.agentPhone),
+    agentEmail: keep(values.agentEmail, listing.agentEmail),
+    listingUrl: url.trim().length > 0 ? url.trim() : values.listingUrl,
+  };
+}
+
 type Props = {
   initial?: DealFormValues;
   submitLabel: string;
@@ -217,6 +248,11 @@ type Props = {
   error?: string | null;
   onSubmit: (payload: DealFormPayload) => void;
   onCancel?: () => void;
+  /**
+   * Shows the listing importer above the fields. On for a new deal, off when
+   * editing one that already has its details.
+   */
+  showImport?: boolean;
 };
 
 export function DealForm({
@@ -226,6 +262,7 @@ export function DealForm({
   error,
   onSubmit,
   onCancel,
+  showImport = false,
 }: Props) {
   const theme = useTheme();
   const [values, setValues] = useState<DealFormValues>(initial ?? EMPTY);
@@ -248,6 +285,13 @@ export function DealForm({
 
   return (
     <View style={styles.form}>
+      {showImport ? (
+        <ListingImport
+          onImport={(listing, url) =>
+            setValues((previous) => applyListing(previous, listing, url))
+          }
+        />
+      ) : null}
       <Card>
         <Text variant="label" tone="muted">
           Property

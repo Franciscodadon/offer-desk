@@ -68,11 +68,12 @@ export default function NewDealScreen() {
       <View style={styles.header}>
         <Text variant="title">New deal</Text>
         <Text variant="body" tone="muted">
-          Address is the only thing required. Everything else can come later.
+          Paste a listing link to fill in the address. Everything else can come later.
         </Text>
       </View>
 
       <DealForm
+        showImport
         submitLabel="Save deal"
         submitting={submitting}
         error={error}
