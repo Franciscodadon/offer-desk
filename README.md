@@ -44,27 +44,23 @@ development; sharing a pipeline across devices needs Option B.
 
 ### Option B: a hosted project, for real use across devices
 
-Step-by-step instructions, including the gotchas, are in
-[`docs/connect-supabase.md`](docs/connect-supabase.md). The short version:
-
 The PRD's whole premise is a phone in the field and the web at the desk sharing
 one pipeline, and that needs a database both can reach.
 
-1. Create a project at [supabase.com](https://supabase.com). The free tier
-   covers the internal build comfortably; free projects are limited in number
-   per organization, so check your current usage before counting on a new one.
-2. In the dashboard, open **Project Settings -> API** and copy the **Project
-   URL** and the **anon public** key into `.env.local`.
-3. Apply the schema:
-   ```bash
-   npx supabase link --project-ref <your-project-ref>
-   npm run db:push
-   ```
-   Or paste each file in `supabase/migrations/` into the dashboard SQL editor,
-   **in filename order**.
-4. Restart with `npx expo start --clear`. The `--clear` matters: Metro caches
-   the transform that inlines `EXPO_PUBLIC_*` values, so without it the app
-   keeps reading the old (empty) config.
+1. Create a project at [supabase.com](https://supabase.com).
+2. Apply the schema. `npm run db:bundle` writes
+   `supabase/schema.bundle.sql`; paste it into the dashboard's SQL Editor and
+   run it. It is one transaction, so it either all lands or none of it does.
+   (With the CLI instead: `npx supabase link --project-ref <ref>` then
+   `npm run db:push`.)
+3. `npm run connect` and paste the Project URL and anon key when prompted. It
+   validates both and writes `.env.local` for you.
+4. `npm run doctor` confirms the project is reachable, the tables exist, and
+   Row-Level Security is on. It names the specific fix for anything that is not.
+5. `npx expo start --clear`, then sign up.
+
+The full walkthrough, including the settings worth changing, is in
+[`docs/connect-supabase.md`](docs/connect-supabase.md).
 
 If you would rather not use Supabase's hosting at all, the same stack
 self-hosts on any VPS you control - it is the same open-source images
@@ -111,6 +107,9 @@ through the real UI so a units bug in a percent field cannot quietly break it.
 | `npm test` | Jest unit tests |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run lint` | ESLint |
+| `npm run connect` | Prompts for your Supabase URL and key and writes `.env.local` |
+| `npm run doctor` | Checks the connection, the schema, and RLS, and names any fix |
+| `npm run db:bundle` | Writes every migration into one file to paste into the SQL Editor |
 | `npm run db:start` / `db:stop` | Boots or stops the full Supabase stack locally (needs Docker) |
 | `npm run db:reset` | Applies every migration to the local stack |
 | `npm run db:status` | Prints the local API URL and anon key |
