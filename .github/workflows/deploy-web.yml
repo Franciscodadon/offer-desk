@@ -78,6 +78,19 @@ jobs:
             echo "Both Supabase secrets are present."
           fi
 
+      # supabase/schema.sql is committed so it can be copied straight from
+      # GitHub, which means it can fall behind the migrations it is built from.
+      # Regenerating it here and failing on a difference makes that impossible.
+      - name: Schema bundle matches migrations
+        run: |
+          npm run db:bundle -- /tmp/schema.check.sql
+          if ! diff -q supabase/schema.sql /tmp/schema.check.sql > /dev/null; then
+            echo "::error::supabase/schema.sql is out of date. Run: npm run db:bundle"
+            diff supabase/schema.sql /tmp/schema.check.sql | head -40
+            exit 1
+          fi
+          echo "schema.sql matches the migrations."
+
       - name: Build web
         env:
           EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
