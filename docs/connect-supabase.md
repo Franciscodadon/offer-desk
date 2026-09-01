@@ -3,6 +3,28 @@
 Start to finish this is about ten minutes, most of it waiting for the project to
 provision. Nothing here is irreversible, and none of it touches the code.
 
+## 0. Get the code onto your machine
+
+This project lives on GitHub, not on your laptop, until you clone it. Every
+`npm run` command below has to be run from inside the project folder, so this
+comes first.
+
+```bash
+git clone https://github.com/Franciscodadon/offer-desk.git
+cd offer-desk
+npm install
+```
+
+`git clone` puts you on the right branch automatically, since it is the
+repository's default. Confirm you are in the right place before continuing:
+
+```bash
+npm run          # should list db:bundle, connect, doctor, and the rest
+```
+
+If that errors with "no package.json", you are in the wrong folder. `cd` into
+`offer-desk` and try again.
+
 ## 1. Create the project
 
 In the Supabase dashboard, **New project**.

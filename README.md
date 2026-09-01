@@ -16,9 +16,14 @@ dashboard KPIs.
 ## Quick start
 
 ```bash
+git clone https://github.com/Franciscodadon/offer-desk.git
+cd offer-desk
 npm install
 npm start          # then press w for web, i for iOS, a for Android
 ```
+
+Every `npm run` command in this README has to be run from inside the
+`offer-desk` folder. "No package.json found" means you are somewhere else.
 
 The app boots without a backend and shows a setup screen explaining what is
 missing. There are two ways to give it one.
